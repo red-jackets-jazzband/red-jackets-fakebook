@@ -177,7 +177,7 @@ Usage: transpose N SOURCE.abc [DESTINATION.abc]
 
 (define (transpose-line line)
   (let ((len (string-length line)))
-    (cond 
+    (cond
       ((<= 0 len 1) (transpose-measures line))
       ((eqv? #\# (string-ref line 0))
        (display line *abc-output-port*))
