@@ -1,4 +1,3 @@
-
 var songs_folder = 'songs';
 
 function parse_song_list(data) {
@@ -9,29 +8,47 @@ function parse_song_list(data) {
     for (var i = 0; i < number_of_songs; i++) {
 
         var song_name = songs[i].split(",")[0]
-            var song_path = songs_folder + '/' + songs[i].split(",")[1]
+        var song_path = songs_folder + '/' + songs[i].split(",")[1]
 
-            $("select#song_menu").append("<option value=" + song_path + ">" + song_name + " </option>");
+        $("select#song_menu").append("<option value=" + song_path + ">" + song_name + " </option>");
     }
+}
+
+function render_song_new(text) {
+
+    var parserParams = {
+        print: false, //pay attention to margins and other formatting commands that don't make sense in a web page
+        header_only: false, //only parse the header
+        stop_on_warning: false //only parse until the first warning is encountered
+    }
+    alert(text);
+    var tunebook = new AbcTuneBook(text);
+    var abcParser = new AbcParse(parserParams);
+    abcParser.parse(tunebook.tunes[0].abc); //TODO handle multiple tunes
+    var tune = abcParser.getTune();
+    var paper = Raphael('notation', 800, 400);
+    var printer = new ABCPrinter(paper);
+    printer.printABC(tune);
 }
 
 function render_song(path) {
 
     var padding = 25
     var printerParams = {
-            scale: 1.0,
-            staffwidth: get_width() - 2.2 * padding,
-            paddingtop: padding,
-            paddingbottom: padding,
-            paddingright: padding,
-            paddingleft: 0,
-            editable: false
+        scale: 1.0,
+        staffwidth: get_width() - 2.2 * padding,
+        paddingtop: padding,
+        paddingbottom: padding,
+        paddingright: padding,
+        paddingleft: 0,
+        editable: false
     }
 
     $.get(path, function(data) {
-        ABCJS.renderAbc('notation', data, {}, printerParams);
+        //ABCJS.renderAbc('notation', data, {}, printerParams);
         //ABCJS.renderMidi('midi', data, {}, {}, {})
-        }, 'text');
+        render_song_new(data);
+    }, 'text');
 
     return false;
 }
@@ -44,11 +61,11 @@ function get_width() {
 
 function transpose_song(path, key) {
     $.get(path, function(data) {
-            alert(t3976)
-            SPOCK.run(t3976);
-            //var result = transpose(path, key);
-            alert('done');
-        }, 'text');
+        alert(t3976)
+        SPOCK.run(t3976);
+        //var result = transpose(path, key);
+        alert('done');
+    }, 'text');
 
     return false;
 }
@@ -66,7 +83,7 @@ function load_songs() {
 
 function init_transpose_menu() {
 
-    var keys = ['Ab','A','A#','Bb','B','B#','Cb','C','C#','Db','D','D#','Eb','E','E#','Fb','F','F#','Gb','G','G#'];
+    var keys = ['Ab', 'A', 'A#', 'Bb', 'B', 'B#', 'Cb', 'C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'E#', 'Fb', 'F', 'F#', 'Gb', 'G', 'G#'];
 
     for (var i = 0; i < keys.length; i++) {
         $("select#transpose_menu").append("<option value=" + keys[i] + ">" + keys[i] + " </option>");
@@ -80,11 +97,11 @@ function subscribe_to_events() {
 
         var id = this.id;
 
-        if( id == "song_menu") {
+        if (id == "song_menu") {
             render_song($(this).val());
         }
 
-        if( id == "transpose_menu") {
+        if (id == "transpose_menu") {
             var current_song = $("select#song_menu").val();
             var key = $(this).val();
             transpose_song(current_song, key);
