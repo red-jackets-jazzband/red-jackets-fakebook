@@ -1,103 +1,126 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-        <title>Red Jackets Fakebook</title>
-        <!-- Jquery mobile dependencies -->
-        <link rel="stylesheet" href="css/jquery.mobile-1.0a1.min.css" />
-        <script src="http://code.jquery.com/jquery-1.4.3.min.js"></script>
-        <script src="scripts/jquery.mobile-1.0a1.min.js"></script>
 
-        <!-- Sheet music rendering -->
-        <script src="scripts/proto.js" type="text/javascript"></script>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <title>Red Jackets Fakebook</title>
+    <!-- Jquery mobile dependencies -->
+    <link rel="stylesheet" href="css/fonts.css"/ type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="css/jquery.mobile-1.0a1.min.css" type="text/css" charset="utf-8" />
+    <script src="http://code.jquery.com/jquery-1.4.3.min.js"></script>
+    <script src="scripts/jquery.mobile-1.0a1.min.js"></script>
+    <!-- Sheet music rendering -->
+    <script src="scripts/proto.js" type="text/javascript"></script>
+    <script src="scripts/raphael.js" type="text/javascript"></script>
+    <script src="scripts/sprintf.js" type="text/javascript"></script>
+    <script src="scripts/abc_glyphs.js" type="text/javascript"></script>
+    <script src="scripts/abc_graphelements.js" type="text/javascript"></script>
+    <script src="scripts/abc_layout.js" type="text/javascript"></script>
+    <script src="scripts/abc_write.js" type="text/javascript"></script>
+    <script src="scripts/abc_tunebook.js" type="text/javascript"></script>
+    <script src="scripts/abc_parse_header.js" type="text/javascript"></script>
+    <script src="scripts/abc_tune.js" type="text/javascript"></script>
+    <script src="scripts/abc_tokenizer.js" type="text/javascript"></script>
+    <script src="scripts/abc_parse.js" type="text/javascript"></script>
+    <!-- Transposing -->
+    <script src="scripts/teoria.js" type="text/javascript"></script>
+    <!-- All custom scripts -->
+    <script src="scripts/red-jackets-fakebook.js" type="text/javascript"></script>
 
-        <script src="scripts/raphael.js" type="text/javascript"></script>
-        <script src="scripts/sprintf.js" type="text/javascript"></script>
-        <script src="scripts/abc_glyphs.js" type="text/javascript"></script>
-        <script src="scripts/abc_graphelements.js" type="text/javascript"></script>
-        <script src="scripts/abc_layout.js" type="text/javascript"></script>
-        <script src="scripts/abc_write.js" type="text/javascript"></script>
-        <script src="scripts/abc_tunebook.js" type="text/javascript"></script>
-        <script src="scripts/abc_parse_header.js" type="text/javascript"></script>
-        <script src="scripts/abc_tune.js" type="text/javascript"></script>
-        <script src="scripts/abc_tokenizer.js" type="text/javascript"></script>
-        <script src="scripts/abc_parse.js" type="text/javascript"></script>
+</head>
 
-        <!-- Transposing -->
+<body>
+    <div id="songs" data-role="page">
+        <div data-role="header">
+         <p style="font-weight : 400; font-family: 'ballparkweiner';font-size:40px;margin:.2em 30px .2em;text-align:center;">
+ Red Jackets Fakebook
+ </p>
 
-        <script src="scripts/teoria.js" type="text/javascript"></script>
-        <!-- All custom scripts -->
-        <script src="scripts/red-jackets-fakebook.js" type="text/javascript"></script>
-        <spock-header>
-    </head>
-    <body>
-        <div data-role="page">
-            <div data-role="header">
-                <h1>Red Jackets Fakebook</h1>
-            </div>
-            <div data-role="content" style="text-align:center;">
-            <select data-native-menu=false id="song_menu"></select>
-        <select data-native-menu=false id="transpose_menu"></select>
-        <div id="notation"></div>
-        <div id="midi"></div>
+        </div>
+        <div data-role="content" style="text-align:center;">
+            <fieldset id="menu" class="ui-grid-a">
+                <div id="menu_left" class="ui-block-a">
+                    <select data-native-menu=false id="song_menu"></select>
+                </div>
+                <div id="menu_right" class="ui-block-b">
+                    <select data-native-menu=false id="transpose_menu"></select>
+                </div>
+            </fieldset>
+
+
+            <div id="notation" align=center></div>
+            <div id="midi"></div>
+        </div>
+        <div id=navbar>
+            <ul>
+                <li><a href=#settings data-icon=gear>Settings</a>
+                </li>
+                <li><a href=#help data-icon=info>Help</a>
+                </li>
+                <li><a href=#search data-icon=search>Search</a>
+                </li>
+            </ul>
+        </div>
     </div>
-    <div id=navbar>
-        <ul>
-            <li><a href=#settings data-icon=gear>Settings</a></li>
-            <li><a href=#help data-icon=info>Help</a></li>
-            <li><a href=#search data-icon=search>Search</a></li>
-        </ul>
+    <!-- --------------- Settings page ------------------ -->
+    <div id="settings" data-role="page">
+        <div data-role="header">
+            <h1>Red Jackets Fakebook</h1>
+        </div>
+        <div data-role="content" style="text-align:center;">
+            <p>Welcome to the settings page!</p>
+        </div>
+        <div id=navbar_settings_page>
+            <ul>
+                <li><a href=#songs data-icon=gear>Songs</a>
+                </li>
+                <li><a href=#help data-icon=info>Help</a>
+                </li>
+                <li><a href=#search data-icon=search>Search</a>
+                </li>
+            </ul>
+        </div>
     </div>
-</div>
-<!-- --------------- Settings page ------------------ -->
-<div id="settings" data-role="page">
-    <div data-role="header">
-        <h1>Red Jackets Fakebook</h1>
+    <!-- --------------- Help page ------------------ -->
+    <div id="help" data-role="page">
+        <div data-role="header">
+            <h1>Red Jackets Fakebook - Help</h1>
+        </div>
+        <div data-role="content" style="text-align:center;">
+            <p>Welcome to the help page!</p>
+        </div>
+        <div id=navbar_help_page>
+            <ul>
+                <li><a href=#songs data-icon=gear>Songs</a>
+                </li>
+                <li><a href=#settings data-icon=gear>Settings</a>
+                </li>
+                <li><a href=#search data-icon=search>Search</a>
+                </li>
+            </ul>
+        </div>
     </div>
-    <div data-role="content" style="text-align:center;">
-        <p>Welcome to the settings page!</p>
+    <!-- --------------- Search page ------------------ -->
+    <div id="search" data-role="page">
+        <div data-role="header">
+            <h1>Red Jackets Fakebook - Search</h1>
+        </div>
+        <div data-role="content" style="text-align:center;">
+            <p>Welcome to the search page!</p>
+        </div>
+        <div id=navbar_search_page>
+            <ul>
+                <li><a href=#songs data-icon=gear>Songs</a>
+                </li>
+                <li><a href=#help data-icon=info>Help</a>
+                </li>
+                <li><a href=#settings data-icon=gear>Settings</a>
+                </li>
+            </ul>
+        </div>
     </div>
-    <div id=navbar_settings_page>
-        <ul>
-            <li><a href=#songs data-icon=gear>Songs</a></li>
-            <li><a href=#help data-icon=info>Help</a></li>
-            <li><a href=#search data-icon=search>Search</a></li>
-        </ul>
-    </div>
-</div>
-<!-- --------------- Help page ------------------ -->
-<div id="help" data-role="page">
-    <div data-role="header">
-        <h1>Red Jackets Fakebook - Help</h1>
-    </div>
-    <div data-role="content" style="text-align:center;">
-        <p>Welcome to the help page!</p>
-    </div>
-    <div id=navbar_help_page>
-        <ul>
-            <li><a href=#songs data-icon=gear>Songs</a></li>
-            <li><a href=#settings data-icon=gear>Settings</a></li>
-            <li><a href=#search data-icon=search>Search</a></li>
-        </ul>
-    </div>
-</div>
-<!-- --------------- Search page ------------------ -->
-<div id="search" data-role="page">
-    <div data-role="header">
-        <h1>Red Jackets Fakebook - Search</h1>
-    </div>
-    <div data-role="content" style="text-align:center;">
-        <p>Welcome to the search page!</p>
-    </div>
-    <div id=navbar_search_page>
-        <ul>
-            <li><a href=#songs data-icon=gear>Songs</a></li>
-            <li><a href=#help data-icon=info>Help</a></li>
-            <li><a href=#settings data-icon=gear>Settings</a></li>
-        </ul>
-    </div>
-</div>
 </body>
+
 </html>
 <script type="text/javascript">
 init();

@@ -1,0 +1,11 @@
+@font-face {
+    font-family: 'ballparkweiner';
+    src: url('fonts/ballpark_weiner/ballpark_weiner-webfont.eot');
+    src: url('fonts/ballpark_weiner/ballpark_weiner-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/ballpark_weiner/ballpark_weiner-webfont.woff') format('woff'),
+         url('fonts/ballpark_weiner/ballpark_weiner-webfont.ttf') format('truetype'),
+         url('fonts/ballpark_weiner/ballpark_weiner-webfont.svg#ballparkweiner') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}

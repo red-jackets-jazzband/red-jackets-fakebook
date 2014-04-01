@@ -15,17 +15,16 @@ indent_mode=2
 [project]
 name=Red Jackets Fakebook
 base_path=/home/ben/Dropbox/Red Jackets/RedJacketsFakebook
+description=
 
 [long line marker]
 long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=0
+current_page=1
 FILE_NAME_0=4196;HTML;0;EUTF-8;1;1;0;%2Fhome%2Fben%2FDropbox%2FRed%20Jackets%2FRedJacketsFakebook%2Findex.html;0;4
-FILE_NAME_1=782;Javascript;0;EUTF-8;1;1;0;%2Fhome%2Fben%2FDropbox%2FRed%20Jackets%2FRedJacketsFakebook%2Fscripts%2Ftranspose.js;0;4
-FILE_NAME_2=1211;None;0;EUTF-8;1;1;0;%2Fhome%2Fben%2FDropbox%2FRed%20Jackets%2FRedJacketsFakebook%2Fscripts%2Ftranspose.scm;0;4
-FILE_NAME_3=3;Javascript;0;EUTF-8;1;1;0;%2Fhome%2Fben%2FDropbox%2FRed%20Jackets%2FRedJacketsFakebook%2Fscripts%2Fspock-runtime-min.js;0;4
+FILE_NAME_1=84;CSS;0;EUTF-8;1;1;0;%2Fhome%2Fben%2F.cache%2F.fr-jfdNtT%2Fstylesheet.css;0;4
 
 [VTE]
 last_dir=/home/ben/Public/hexaco
