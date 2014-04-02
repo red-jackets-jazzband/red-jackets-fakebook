@@ -38,9 +38,20 @@ function parse_string_to_abc_tune(text) {
     abcParser.parse(tunebook.tunes[0].abc); //TODO handle multiple tunes
     current_song = abcParser.getTune();
 
-    console.dir(current_song)
-
     render_song(current_song);
+
+    update_current_key();
+}
+
+function update_current_key() {
+
+    var key = parse_key_signature(current_song.lines[0].staff[0].key);
+    console.log(key);
+
+    key = teoria_chord_name_to_abc_chord_name(key);
+
+    //$('#transpose_menu').val(key);
+    $('#transpose_menu option[value=' + key + ']').attr('selected', true);
 }
 
 function init_parsing_stuff() {
@@ -66,27 +77,70 @@ function get_width() {
     return width;
 }
 
+function parse_key_signature(key_signature) {
+
+    // Todo: seven accidentals case
+    var sharps = "CGDAEBF";
+    var flats = "CFBEADG";
+
+    var key = 'C';
+
+    if (key_signature.accidentals[0] !== undefined) {
+        var number_of_accidentals = key_signature.accidentals.length;
+        var acc = key_signature.accidentals[0].acc;
+
+        if (acc === 'sharp') {
+            key = sharps.charAt(number_of_accidentals);
+        } else {
+            key = flats.charAt(number_of_accidentals);
+
+            if (number_of_accidentals > 1) {
+                key += 'b';
+            }
+        }
+    }
+
+    key += 'M'
+
+    return key;
+}
+
 function transpose_song(key) {
 
     // Get current key
-    interval = teoria.interval('M2');
+    var current_key = parse_key_signature(current_song.lines[0].staff[0].key);
+    current_key = teoria_chord_name_to_abc_chord_name(current_key);
+
+    console.log("Transpose from " + current_key + " to " + key);
+    //interval = teoria.interval(current_key, key);
+    interval = teoria.interval.between(teoria.note(current_key), teoria.note(key));
+
+    //console.dir(current_song.lines[0].staff[0].key);
 
     for (var i = 0; i < current_song.lines.length; i++) {
 
-        console.log("Transposing line" + i);
-        var transposed_line = transpose_line(current_song.lines[i].staff[0].voices[0], interval);
+        var clef = current_song.lines[i].staff[0].clef;
+        current_key = parse_key_signature(current_song.lines[i].staff[0].key);
+
+        var current_key_signature = key_signature_from_teoria_key(current_key, clef);
+
+        var transposed_key_signature = transpose_key(current_key, clef, interval);
+
+        var line_of_notes = current_song.lines[i].staff[0].voices[0];
+        var transposed_line = transpose_line(line_of_notes, interval, current_key_signature, transposed_key_signature);
 
         current_song.lines[i].staff[0].voices[0] = transposed_line;
+        current_song.lines[i].staff[0].key = transposed_key_signature;
     }
+
+    update_current_key();
+
     return false;
 }
 
-function transpose_line(line, teoria_interval) {
+function transpose_line(line, teoria_interval, current_key, transposed_key) {
 
     var transposed_line = []
-
-    //    line_string = JSON.stringify(line);
-    //  console.log(line_string)
 
     for (var i = 0; i < line.length; i++) {
 
@@ -95,10 +149,7 @@ function transpose_line(line, teoria_interval) {
         switch (element.el_type) {
 
             case "note":
-                transposed_line.push(transpose_note(element, teoria_interval));
-                break;
-            case "chord":
-                transposed_line.push(transpose_chord(element, teoria_interval));
+                transposed_line.push(transpose_note(element, teoria_interval, current_key, transposed_key));
                 break;
             default:
                 transposed_line.push(element);
@@ -109,14 +160,57 @@ function transpose_line(line, teoria_interval) {
     return transposed_line;
 }
 
-function transpose_chord(abc_chord, teoria_interval) {
-    console.log("Transposing chord");
-    return abc_chord;
+function key_signature_from_teoria_key(key, clef) {
+
+    var abc_key_name = teoria_chord_name_to_abc_chord_name(key);
+
+    var acc = key_signatures[abc_key_name];
+
+    var key_sig = {
+        accidentals: acc
+    };
+
+    parse_header = new AbcParseHeader(undefined, undefined, undefined, undefined);
+
+    parse_header.addPosToKey(clef, key_sig);
+
+    return key_sig;
 }
 
-function transpose_note(abc_note, teoria_interval) {
+function transpose_key(key, clef, teoria_interval) {
 
-    console.log("Transposing note");
+    var transposed_key = teoria.chord(key);
+    transposed_key.transpose(teoria_interval.toString());
+
+    return key_signature_from_teoria_key(transposed_key.toString(), clef);
+}
+
+function teoria_chord_name_to_abc_chord_name(teoria_chord_name) {
+
+    return teoria_chord_name.replace("M", "");
+}
+
+function transpose_chord(abc_chord, teoria_interval) {
+
+    var chord = teoria.chord(abc_chord);
+    chord.transpose(teoria_interval.toString());
+
+    return chord.name;
+}
+
+function transpose_note(abc_note, teoria_interval, current_key, transposed_key) {
+
+    // If there is a chord, transpose it
+    if (abc_note.chord !== undefined) {
+        abc_note.chord[0].name = transpose_chord(abc_note.chord[0].name, teoria_interval);
+    }
+
+    // If it is a rest do nothing with note
+    if (abc_note.pitches === undefined) {
+        return abc_note;
+    }
+
+    add_acc_from_key_signature(abc_note, current_key);
 
     // parse the note
     teoria_note = abc_note_to_teoria_note(abc_note);
@@ -126,25 +220,69 @@ function transpose_note(abc_note, teoria_interval) {
     transposed_note = teoria_note.interval(intv);
     transposed_abc_note = teoria_note_to_abc_note(transposed_note);
 
+    remove_acc_from_key_signature(transposed_abc_note, transposed_key);
+
     //return it
-    abc_note.pitches[0].pitch = transposed_abc_note.pitch;
-    abc_note.pitches[0].accidental = transposed_abc_note.accidental;
-    abc_note.pitches[0].verticalPos = transposed_abc_note.verticalPos;
+    abc_note.pitches[0].pitch = transposed_abc_note.pitches[0].pitch;
+    abc_note.pitches[0].accidental = transposed_abc_note.pitches[0].accidental;
+    abc_note.pitches[0].verticalPos = transposed_abc_note.pitches[0].verticalPos;
 
-    abc_note.averagepitch = transposed_abc_note.pitch;
-    abc_note.minpitch = transposed_abc_note.pitch;
-    abc_note.maxpitch = transposed_abc_note.pitch;
-
-    console.log(JSON.stringify(abc_note));
+    abc_note.averagepitch = transposed_abc_note.pitches[0].pitch;
+    abc_note.minpitch = transposed_abc_note.pitches[0].pitch;
+    abc_note.maxpitch = transposed_abc_note.pitches[0].pitch;
 
     return abc_note;
 }
 
-function get_key_using_accidentals(accidentals) {
+function add_acc_from_key_signature(abc_note, key) {
 
-    return key
+    if (key.accidentals === undefined)
+        return;
+
+    var abc_root_note = abc_note.pitches[0];
+
+    for (var i = 0; i < key.accidentals.length; i++) {
+
+        if ((abc_root_note.pitch % 8) === (key.accidentals[i].verticalPos % 8)) {
+
+            switch (abc_root_note.accidental) {
+
+                case "":
+                    abc_root_note.accidental = key.accidentals[i].acc;
+                    break;
+                case key.accidentals[i].acc:
+                    abc_root_note.accidental = "dbl" + abc_root_note.accidental;
+                    break;
+            }
+        }
+    }
+
+    //console.dir(abc_root_note);
 }
 
+function remove_acc_from_key_signature(abc_note, key) {
+
+    if (key.accidentals === undefined)
+        return;
+
+    var abc_root_note = abc_note.pitches[0];
+
+    for (var i = 0; i < key.accidentals.length; i++) {
+
+        if (abc_root_note.pitch % 8 === key.accidentals[i].verticalPos % 8) {
+
+            switch (abc_root_note.accidental) {
+
+                case "":
+                    abc_root_note.accidental = "natural";
+                    break;
+                case key.accidentals[i].acc:
+                    abc_root_note.accidental = "";
+                    break;
+            }
+        }
+    }
+}
 
 function teoria_note_to_abc_note(teoria_note) {
 
@@ -176,9 +314,11 @@ function teoria_note_to_abc_note(teoria_note) {
     }
 
     return {
-        "pitch": pitch,
-        "verticalPos": pitch,
-        "accidental": accidental
+        pitches: [{
+            "pitch": pitch,
+            "verticalPos": pitch,
+            "accidental": accidental
+        }]
     }
 }
 
