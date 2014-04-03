@@ -1,6 +1,7 @@
 var songs_folder = 'songs';
 var current_song = null;
-var paper = null;
+var paper_chords = null;
+var paper_score = null;
 var printer = null;
 
 var abcParser = null;
@@ -21,13 +22,65 @@ function parse_song_list(data) {
 
 function init_render_stuff() {
 
-    paper = Raphael('notation', 800, 400);
-    printer = new ABCPrinter(paper);
+    paper_chords = Raphael('chords', 800, 0);
+    paper_score = Raphael('notation', 800, 400);
+    printer = new ABCPrinter(paper_score);
+}
+
+function render_chords(chords_to_render) {
+
+    var cols = 4;
+    var rows = Math.ceil(chords_to_render.length / cols);
+
+    var height = 40;
+    var width = 150;
+
+    var margin = 30;
+
+    var paper_width = cols * width + 2 * margin;
+    var paper_heigth = rows * height + 2 * margin;
+
+    var x_offset = paper_width / 2 - width * (cols / 2);
+    var y_offset = margin;
+
+    var paperDom = paper_chords.canvas;
+    paperDom.parentNode.removeChild(paperDom);
+    paper_chords = Raphael('chords', paper_width, paper_heigth);
+
+    for (var y = 0; y < rows; y++) {
+        for (var x = 0; x < cols; x++) {
+
+            var rect_x = x * width + x_offset;
+            var rect_y = y * height + y_offset;
+
+            var rect = paper_chords.rect(rect_x, rect_y, width, height);
+            rect.attr({
+                'stroke': '#666666',
+                'stroke-width': 0.5
+            });
+
+            var chord_idx = x + y * cols;
+
+            var chords = chords_to_render[chord_idx];
+            chords = chords.join("  - ");
+
+            //console.log("ID: " + chord_idx + " Chord: " + chord);
+            var text = paper_chords.text(rect_x + width / 2, rect_y + height / 2, chords);
+            text.attr({
+                opacity: 100,
+                'font-family': 'serif',
+                'font-weight': 200,
+                'font-size': 24
+            }).toFront();
+        }
+    }
+
+
 }
 
 function render_song(song_to_render) {
 
-    paper.clear();
+    paper_score.clear();
     printer.printABC(song_to_render);
 }
 
@@ -40,17 +93,17 @@ function parse_string_to_abc_tune(text) {
 
     render_song(current_song);
 
+    var chord_scheme = parse_chord_scheme();
+    render_chords(chord_scheme);
     update_current_key();
 }
 
 function update_current_key() {
 
     var key = parse_key_signature(current_song.lines[0].staff[0].key);
-    console.log(key);
 
     key = teoria_chord_name_to_abc_chord_name(key);
 
-    //$('#transpose_menu').val(key);
     $('#transpose_menu option[value=' + key + ']').attr('selected', true);
 }
 
@@ -105,6 +158,53 @@ function parse_key_signature(key_signature) {
     return key;
 }
 
+function parse_chord_scheme() {
+
+    var chords = [];
+    var current_measure = [];
+
+    var parsed_first_bar = false;
+    var parsed_valid_chord = false;
+    var did_not_parse_chord_in_this_measure = true;
+
+    for (var i = 0; i < current_song.lines.length; i++) {
+
+        var line = current_song.lines[i].staff[0].voices[0];
+
+        for (var line_idx = 0; line_idx < line.length; line_idx++) {
+
+            element = line[line_idx];
+
+            if (element.el_type === "bar") {
+
+                if (did_not_parse_chord_in_this_measure && parsed_first_bar) {
+                    current_measure.push("%");
+                }
+
+                if (parsed_first_bar) {
+                    chords.push(current_measure.slice(0));
+                    current_measure = [];
+                }
+
+                did_not_parse_chord_in_this_measure = true;
+                parsed_first_bar = true;
+            }
+
+            if (element.chord !== undefined) {
+                current_measure.push(element.chord[0].name);
+                did_not_parse_chord_in_this_measure = false;
+                parsed_valid_chord = true;
+            }
+        }
+    }
+
+    // Prevent returning only % % % % % ....
+    if (!parsed_valid_chord) {
+        chords = [];
+    }
+    return chords;
+}
+
 function transpose_song(key) {
 
     // Get current key
@@ -112,10 +212,8 @@ function transpose_song(key) {
     current_key = teoria_chord_name_to_abc_chord_name(current_key);
 
     console.log("Transpose from " + current_key + " to " + key);
-    //interval = teoria.interval(current_key, key);
-    interval = teoria.interval.between(teoria.note(current_key), teoria.note(key));
 
-    //console.dir(current_song.lines[0].staff[0].key);
+    interval = teoria.interval.between(teoria.note(current_key), teoria.note(key));
 
     for (var i = 0; i < current_song.lines.length; i++) {
 
@@ -132,6 +230,9 @@ function transpose_song(key) {
         current_song.lines[i].staff[0].voices[0] = transposed_line;
         current_song.lines[i].staff[0].key = transposed_key_signature;
     }
+
+    var chord_scheme = parse_chord_scheme();
+    render_chords(chord_scheme);
 
     update_current_key();
 

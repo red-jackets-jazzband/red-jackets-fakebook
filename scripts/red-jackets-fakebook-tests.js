@@ -16,6 +16,22 @@ create_note = function() {
     return abc_note;
 }
 
+create_clef = function(type) {
+
+    var clef = undefined;
+    switch (type) {
+        default:
+        case "treble":
+
+            clef = {
+                "type": "treble",
+                "verticalPos": 0
+            };
+            break;
+    }
+    return clef;
+}
+
 create_key_signature = function(key) {
 
     var key_signature = null;
@@ -192,226 +208,312 @@ module('teoria_note_to_abc_note');
 test('c-note', function() {
 
     deepEqual(teoria_note_to_abc_note(teoria.note('c\'')), {
-        pitch: 14,
-        verticalPos: 14,
-        accidental: ""
+        "pitches": [{
+            pitch: 14,
+            verticalPos: 14,
+            accidental: ""
+        }]
     }, 'c\' note');
     deepEqual(teoria_note_to_abc_note(teoria.note('c')), {
-        pitch: 7,
-        verticalPos: 7,
-        accidental: ""
+
+        "pitches": [{
+            pitch: 7,
+            verticalPos: 7,
+            accidental: ""
+        }]
+
     }, 'c note');
     deepEqual(teoria_note_to_abc_note(teoria.note('c#')), {
-        pitch: 7,
-        verticalPos: 7,
-        accidental: "sharp"
+        "pitches": [{
+            pitch: 7,
+            verticalPos: 7,
+            accidental: "sharp"
+        }]
     }, 'c# note');
     deepEqual(teoria_note_to_abc_note(teoria.note('C')), {
-        pitch: 0,
-        verticalPos: 0,
-        accidental: ""
+        "pitches": [{
+            pitch: 0,
+            verticalPos: 0,
+            accidental: ""
+        }]
     }, 'C note');
     deepEqual(teoria_note_to_abc_note(teoria.note('C,')), {
-        pitch: -7,
-        verticalPos: -7,
-        accidental: ""
+        "pitches": [{
+            pitch: -7,
+            verticalPos: -7,
+            accidental: ""
+        }]
     }, 'C, note');
     deepEqual(teoria_note_to_abc_note(teoria.note('Cb,')), {
-        pitch: -7,
-        verticalPos: -7,
-        accidental: "flat"
+        "pitches": [{
+            pitch: -7,
+            verticalPos: -7,
+            accidental: "flat"
+        }]
     }, 'Cb, note');
 });
 test('d-note', function() {
     deepEqual(teoria_note_to_abc_note(teoria.note('d\'')), {
-        pitch: 15,
-        verticalPos: 15,
-        accidental: ""
+        "pitches": [{
+            pitch: 15,
+            verticalPos: 15,
+            accidental: ""
+        }]
     }, 'd\' note');
     deepEqual(teoria_note_to_abc_note(teoria.note('d')), {
-        pitch: 8,
-        verticalPos: 8,
-        accidental: ""
+        "pitches": [{
+            pitch: 8,
+            verticalPos: 8,
+            accidental: ""
+        }]
     }, 'd note');
     deepEqual(teoria_note_to_abc_note(teoria.note('d#')), {
-        pitch: 8,
-        verticalPos: 8,
-        accidental: "sharp"
+        "pitches": [{
+            pitch: 8,
+            verticalPos: 8,
+            accidental: "sharp"
+        }]
     }, 'd# note');
     deepEqual(teoria_note_to_abc_note(teoria.note('D')), {
-        pitch: 1,
-        verticalPos: 1,
-        accidental: ""
+        "pitches": [{
+            pitch: 1,
+            verticalPos: 1,
+            accidental: ""
+        }]
     }, 'D note');
     deepEqual(teoria_note_to_abc_note(teoria.note('D,')), {
-        pitch: -6,
-        verticalPos: -6,
-        accidental: ""
+        "pitches": [{
+            pitch: -6,
+            verticalPos: -6,
+            accidental: ""
+        }]
     }, 'D, note');
     deepEqual(teoria_note_to_abc_note(teoria.note('Db,')), {
-        pitch: -6,
-        verticalPos: -6,
-        accidental: "flat"
+        "pitches": [{
+            pitch: -6,
+            verticalPos: -6,
+            accidental: "flat"
+        }]
     }, 'Db, note');
 });
 test('e-note', function() {
     deepEqual(teoria_note_to_abc_note(teoria.note('e\'')), {
-        pitch: 16,
-        verticalPos: 16,
-        accidental: ""
+        "pitches": [{
+            pitch: 16,
+            verticalPos: 16,
+            accidental: ""
+        }]
     }, 'e\' note');
     deepEqual(teoria_note_to_abc_note(teoria.note('e')), {
-        pitch: 9,
-        verticalPos: 9,
-        accidental: ""
+        "pitches": [{
+            pitch: 9,
+            verticalPos: 9,
+            accidental: ""
+        }]
     }, 'e note');
     deepEqual(teoria_note_to_abc_note(teoria.note('e#')), {
-        pitch: 9,
-        verticalPos: 9,
-        accidental: "sharp"
+        "pitches": [{
+            pitch: 9,
+            verticalPos: 9,
+            accidental: "sharp"
+        }]
     }, 'e# note');
     deepEqual(teoria_note_to_abc_note(teoria.note('E')), {
-        pitch: 2,
-        verticalPos: 2,
-        accidental: ""
+        "pitches": [{
+            pitch: 2,
+            verticalPos: 2,
+            accidental: ""
+        }]
     }, 'E note');
     deepEqual(teoria_note_to_abc_note(teoria.note('E,')), {
-        pitch: -5,
-        verticalPos: -5,
-        accidental: ""
+        "pitches": [{
+            pitch: -5,
+            verticalPos: -5,
+            accidental: ""
+        }]
     }, 'E, note');
     deepEqual(teoria_note_to_abc_note(teoria.note('Eb,')), {
-        pitch: -5,
-        verticalPos: -5,
-        accidental: "flat"
+        "pitches": [{
+            pitch: -5,
+            verticalPos: -5,
+            accidental: "flat"
+        }]
     }, 'Eb, note');
 });
 test('f-note', function() {
     deepEqual(teoria_note_to_abc_note(teoria.note('f\'')), {
-        pitch: 17,
-        verticalPos: 17,
-        accidental: ""
+        "pitches": [{
+            pitch: 17,
+            verticalPos: 17,
+            accidental: ""
+        }]
     }, 'f\' note');
     deepEqual(teoria_note_to_abc_note(teoria.note('f')), {
-        pitch: 10,
-        verticalPos: 10,
-        accidental: ""
+        "pitches": [{
+            pitch: 10,
+            verticalPos: 10,
+            accidental: ""
+        }]
     }, 'f note');
     deepEqual(teoria_note_to_abc_note(teoria.note('f#')), {
-        pitch: 10,
-        verticalPos: 10,
-        accidental: "sharp"
+        "pitches": [{
+            pitch: 10,
+            verticalPos: 10,
+            accidental: "sharp"
+        }]
     }, 'f# note');
     deepEqual(teoria_note_to_abc_note(teoria.note('F')), {
-        pitch: 3,
-        verticalPos: 3,
-        accidental: ""
+        "pitches": [{
+            pitch: 3,
+            verticalPos: 3,
+            accidental: ""
+        }]
     }, 'F note');
     deepEqual(teoria_note_to_abc_note(teoria.note('F,')), {
-        pitch: -4,
-        verticalPos: -4,
-        accidental: ""
+        "pitches": [{
+            pitch: -4,
+            verticalPos: -4,
+            accidental: ""
+        }]
     }, 'F, note');
     deepEqual(teoria_note_to_abc_note(teoria.note('Fb,')), {
-        pitch: -4,
-        verticalPos: -4,
-        accidental: "flat"
+        "pitches": [{
+            pitch: -4,
+            verticalPos: -4,
+            accidental: "flat"
+        }]
     }, 'Fb, note');
 });
 test('g-note', function() {
     deepEqual(teoria_note_to_abc_note(teoria.note('g\'')), {
-        pitch: 18,
-        verticalPos: 18,
-        accidental: ""
+        "pitches": [{
+            pitch: 18,
+            verticalPos: 18,
+            accidental: ""
+        }]
     }, 'g\' note');
     deepEqual(teoria_note_to_abc_note(teoria.note('g')), {
-        pitch: 11,
-        verticalPos: 11,
-        accidental: ""
+        "pitches": [{
+            pitch: 11,
+            verticalPos: 11,
+            accidental: ""
+        }]
     }, 'g note');
     deepEqual(teoria_note_to_abc_note(teoria.note('g#')), {
-        pitch: 11,
-        verticalPos: 11,
-        accidental: "sharp"
+        "pitches": [{
+            pitch: 11,
+            verticalPos: 11,
+            accidental: "sharp"
+        }]
     }, 'g# note');
     deepEqual(teoria_note_to_abc_note(teoria.note('G')), {
-        pitch: 4,
-        verticalPos: 4,
-        accidental: ""
+        "pitches": [{
+            pitch: 4,
+            verticalPos: 4,
+            accidental: ""
+        }]
     }, 'G note');
     deepEqual(teoria_note_to_abc_note(teoria.note('G,')), {
-        pitch: -3,
-        verticalPos: -3,
-        accidental: ""
+        "pitches": [{
+            pitch: -3,
+            verticalPos: -3,
+            accidental: ""
+        }]
     }, 'G, note');
     deepEqual(teoria_note_to_abc_note(teoria.note('Gb,')), {
-        pitch: -3,
-        verticalPos: -3,
-        accidental: "flat"
+        "pitches": [{
+            pitch: -3,
+            verticalPos: -3,
+            accidental: "flat"
+        }]
     }, 'Gb, note');
 });
 test('a-note', function() {
     deepEqual(teoria_note_to_abc_note(teoria.note('a\'')), {
-        pitch: 19,
-        verticalPos: 19,
-        accidental: ""
+        "pitches": [{
+            pitch: 19,
+            verticalPos: 19,
+            accidental: ""
+        }]
     }, 'a\' note');
     deepEqual(teoria_note_to_abc_note(teoria.note('a')), {
-        pitch: 12,
-        verticalPos: 12,
-        accidental: ""
+        "pitches": [{
+            pitch: 12,
+            verticalPos: 12,
+            accidental: ""
+        }]
     }, 'a note');
     deepEqual(teoria_note_to_abc_note(teoria.note('a#')), {
-        pitch: 12,
-        verticalPos: 12,
-        accidental: "sharp"
+        "pitches": [{
+            pitch: 12,
+            verticalPos: 12,
+            accidental: "sharp"
+        }]
     }, 'a# note');
     deepEqual(teoria_note_to_abc_note(teoria.note('A')), {
-        pitch: 5,
-        verticalPos: 5,
-        accidental: ""
+        "pitches": [{
+            pitch: 5,
+            verticalPos: 5,
+            accidental: ""
+        }]
     }, 'A note');
     deepEqual(teoria_note_to_abc_note(teoria.note('A,')), {
-        pitch: -2,
-        verticalPos: -2,
-        accidental: ""
+        "pitches": [{
+            pitch: -2,
+            verticalPos: -2,
+            accidental: ""
+        }]
     }, 'A, note');
     deepEqual(teoria_note_to_abc_note(teoria.note('Ab,')), {
-        pitch: -2,
-        verticalPos: -2,
-        accidental: "flat"
+        "pitches": [{
+            pitch: -2,
+            verticalPos: -2,
+            accidental: "flat"
+        }]
     }, 'Ab, note');
 });
 test('b-note', function() {
     deepEqual(teoria_note_to_abc_note(teoria.note('b\'')), {
-        pitch: 20,
-        verticalPos: 20,
-        accidental: ""
+        "pitches": [{
+            pitch: 20,
+            verticalPos: 20,
+            accidental: ""
+        }]
     }, 'b\' note');
     deepEqual(teoria_note_to_abc_note(teoria.note('b')), {
-        pitch: 13,
-        verticalPos: 13,
-        accidental: ""
+        "pitches": [{
+            pitch: 13,
+            verticalPos: 13,
+            accidental: ""
+        }]
     }, 'b note');
     deepEqual(teoria_note_to_abc_note(teoria.note('b#')), {
-        pitch: 13,
-        verticalPos: 13,
-        accidental: "sharp"
+        "pitches": [{
+            pitch: 13,
+            verticalPos: 13,
+            accidental: "sharp"
+        }]
     }, 'b# note');
     deepEqual(teoria_note_to_abc_note(teoria.note('B')), {
-        pitch: 6,
-        verticalPos: 6,
-        accidental: ""
+        "pitches": [{
+            pitch: 6,
+            verticalPos: 6,
+            accidental: ""
+        }]
     }, 'B note');
     deepEqual(teoria_note_to_abc_note(teoria.note('B,')), {
-        pitch: -1,
-        verticalPos: -1,
-        accidental: ""
+        "pitches": [{
+            pitch: -1,
+            verticalPos: -1,
+            accidental: ""
+        }]
     }, 'B, note');
     deepEqual(teoria_note_to_abc_note(teoria.note('Bb,')), {
-        pitch: -1,
-        verticalPos: -1,
-        accidental: "flat"
+        "pitches": [{
+            pitch: -1,
+            verticalPos: -1,
+            accidental: "flat"
+        }]
     }, 'Bb, note');
 
 });
@@ -419,7 +521,7 @@ test('b-note', function() {
 module('transpose_note');
 test('Perfect', function() {
 
-    deepEqual(transpose_note(create_note(), teoria.interval('P1')).pitches[0].pitch, 0, 'Transpose a C note a perfect first up results in D note');
+    deepEqual(transpose_note(create_note(), create_clef("treble"), teoria.interval('P1')).pitches[0].pitch, 0, 'Transpose a C note a perfect first up results in D note');
     deepEqual(transpose_note(create_note(), teoria.interval('P1')).pitches[0].accidental, "", 'Transpose a C note a perfect first up results in no accidental');
 
     deepEqual(transpose_note(create_note(), teoria.interval('P4')).pitches[0].pitch, 3, 'Transpose a C note a perfect fourth up results in E note');
