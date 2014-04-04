@@ -1,0 +1,42 @@
+ .red-jackets-logo {
+     color:rgba(255, 189, 0, 1);
+     text-shadow:0 -1px 1px rgba(255, 0, 0, 1);
+     font-weight : 400;
+     font-family:'ballparkweiner';
+     font-size:40px;
+     margin:.2em 30px .2em;
+     text-align:center;
+ }
+ .red-jackets-title-bar a:link {
+     color:rgba(255, 189, 0, 1);
+     text-shadow:0 0px 0px rgba(255, 0, 0, 1);
+     text-decoration: none;
+     font-size:30px;
+     font-weight : 200;
+ }
+ .red-jackets-title-bar a:visited {
+     color:rgba(255, 189, 0, 1);
+     text-shadow:0 0px 0px rgba(255, 0, 0, 1);
+     text-decoration: none;
+     font-size:30px;
+     font-weight : 200;
+ }
+ .red-jackets-title-bar a:hover {
+     color:rgba(255, 189, 0, 1);
+     text-shadow:0 0px 0px rgba(255, 0, 0, 1);
+     text-decoration: none;
+     font-size:30px;
+     font-weight : 200;
+ }
+ .red-jackets-title-bar {
+     color:rgba(255, 189, 0, 1);
+     border:1px solid #2A2A2A;
+     background:#111;
+     background-image:-moz-linear-gradient(top, #3c3c3c, #111);
+     background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0, #3c3c3c), color-stop(1, #111));
+     -ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorStr='#3c3c3c',EndColorStr='#111111')";
+     text-align:center;
+ }
+ .red-jackets-notation {
+     text-align:center;
+ }

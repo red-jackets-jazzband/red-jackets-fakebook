@@ -16,24 +16,31 @@ function parse_song_list(data) {
         var song_name = songs[i].split(",")[0]
         var song_path = songs_folder + '/' + songs[i].split(",")[1]
 
-        $("select#song_menu").append("<option value=" + song_path + ">" + song_name + " </option>");
+        //$("select#song_menu").append("<option value=" + song_path + ">" + song_name + " </option>");
+        $("#song_menu").append("<li data-path=" + song_path + ">" + song_name + " </li>");
     }
 }
 
 function init_render_stuff() {
 
-    paper_chords = Raphael('chords', 800, 0);
-    paper_score = Raphael('notation', 800, 400);
+    var screenWidth = 600;
+
+    paper_chords = Raphael('chords', screenWidth, 0);
+    paper_score = Raphael('notation', screenWidth, 400);
     printer = new ABCPrinter(paper_score);
 }
 
 function render_chords(chords_to_render) {
 
     var cols = 4;
+    if (chords_to_render.length > (4 * 4)) {
+        cols = 8;
+    }
+
     var rows = Math.ceil(chords_to_render.length / cols);
 
     var height = 40;
-    var width = 150;
+    var width = 800 / cols;
 
     var margin = 30;
 
@@ -70,7 +77,7 @@ function render_chords(chords_to_render) {
                 opacity: 100,
                 'font-family': 'serif',
                 'font-weight': 200,
-                'font-size': 24
+                'font-size': 20
             }).toFront();
         }
     }
@@ -517,9 +524,6 @@ function add_accidental_to_string(str_note, abc_note) {
 
 function create_nav_bars() {
     $("#navbar").navbar();
-    $("#navbar_settings_page").navbar();
-    $("#navbar_help_page").navbar();
-    $("#navbar_search_page").navbar();
 }
 
 function load_songs() {
@@ -531,36 +535,34 @@ function init_transpose_menu() {
     var keys = ['Ab', 'A', 'A#', 'Bb', 'B', 'B#', 'Cb', 'C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'E#', 'Fb', 'F', 'F#', 'Gb', 'G', 'G#'];
 
     for (var i = 0; i < keys.length; i++) {
-        $("select#transpose_menu").append("<option value=" + keys[i] + ">" + keys[i] + " </option>");
+        $("#transpose_menu").append("<li data-key=" + keys[i] + ">" + keys[i] + " </li>");
     }
 }
 
 function subscribe_to_events() {
 
     // Event handler when different song is selected
-    $("select").bind("change", select_menu_event_handler);
+    $('#song_menu').on('click', 'li', song_listview_event_handler);
+    $('#transpose_menu').on('click', 'li', transpose_listview_event_handler);
 
     // Event handler window resize event
     $(window).bind('resize', function(e) {
         console.log('render song called from resize');
         render_song();
     });
-
 }
 
-function select_menu_event_handler(event) {
-    var id = this.id;
+function song_listview_event_handler(event) {
 
-    if (id == "song_menu") {
-        song_path = $("select#song_menu").val();
-        parse_song(song_path);
-    }
+    var song_path = this.getAttribute('data-path');
+    parse_song(song_path);
+}
 
-    if (id == "transpose_menu") {
-        var key = $(this).val();
-        transpose_song(key);
-        render_song(current_song);
-    }
+function transpose_listview_event_handler(event) {
+
+    var key = this.getAttribute('data-key');
+    transpose_song(key);
+    render_song(current_song);
 }
 
 function init() {
@@ -572,5 +574,5 @@ function init() {
     init_parsing_stuff();
     init_render_stuff();
 
-    parse_song($("select#song_menu").val());
+    //parse_song($("select#song_menu").val());
 }
