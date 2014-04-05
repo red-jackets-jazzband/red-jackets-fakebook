@@ -4,11 +4,14 @@
 <head>
     <meta http-equiv="Content-Type" content="width=device-width, initial-scale=1" name="viewport">
     <title>Red Jackets Fakebook</title>
-    <!-- Jquery mobile dependencies -->
+    <link rel="shortcut icon" href="images/favicon.ico">
+
+    <!-- Styling -->
     <link rel="stylesheet" href="css/fonts.css" / type="text/css" charset="utf-8">
-    <!--<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />-->
     <link rel="stylesheet" href="css/jquery.mobile-1.4.2.min.css" type="text/css" charset="utf-8" />
     <link rel="stylesheet" href="css/red-jackets.css" type="text/css" charset="utf-8" />
+
+    <!-- Jquery mobile dependencies -->
     <script src="scripts/jquery-1.9.1.min.js"></script>
     <script src="scripts/jquery.mobile-1.4.2.min.js"></script>
 
@@ -38,14 +41,25 @@
         <div class="red-jackets-title-bar" data-role="header" style="text-align:center;">
 
             <div style='float: left; text-align: left'>
-                <a href="#song_panel">&#8285;</a>
+                <a href="#song_panel">
+                    <img alt="image" src="images/icon_r_40.png" vspace="2" />
+                </a>
 
             </div>
             <span class="red-jackets-logo">
                 Red Jackets Fakebook
             </span>
             <div style='float: right; text-align: right'>
-                <a href="#transpose_panel">&#8285;</a>
+                <a href="#transpose_popup" data-rel="popup">
+                    <img alt="image" src="images/icon_transpose_40.png" vspace="2" />
+                </a>
+                <div data-role="popup" id="transpose_popup">
+                    <ul data-role="listview" id="transpose_menu" data-filter="true" data-filter-placeholder="Search key..." data-theme="b">
+                    </ul>
+                </div>
+                <a href="#transpose_panel">
+                    <img alt="image" src="images/icon_menu_40.png" vspace="2" />
+                </a>
             </div>
         </div>
         <div data-role="content" style="text-align:center;">
@@ -60,9 +74,47 @@
         </div>
 
         <div data-role="panel" data-position="right" data-display="push" data-theme="b" id="transpose_panel">
-            <ul data-role="listview" id="transpose_menu" data-filter="true" data-filter-placeholder="Search key...">
+            <h3>Choose the layout</h3>
 
+            <ul data-role="listview" id="choose_view_menu">
+                <li>
+                    <a id="leadsheet" href="#">
+                        <img src="images/icon_band_64.png" />
+                        <h2>Leadsheet</h2>
+                    </a>
+                </li>
+                <li>
+                    <a id="trumpet" href="#">
+                        <img src="images/icon_trumpet_64.png" />
+                        <h2>Trumpet</h2>
+                    </a>
+                </li>
+                <li>
+                    <a id="trombone" href="#">
+                        <img src="images/icon_trombone_64.png" />
+                        <h2>Trombone</h2>
+                    </a>
+                </li>
+                <li>
+                    <a id="clarinet" href="#">
+                        <img src="images/icon_clarinet_64.png" />
+                        <h2>Clarinet</h2>
+                    </a>
+                </li>
+                <li>
+                    <a id="saxophone" href="#">
+                        <img src="images/icon_saxophone_64.png" />
+                        <h2>Saxophone</h2>
+                    </a>
+                </li>
+                <li>
+                    <a id="sous" href="#">
+                        <img src="images/icon_sous_64.png" />
+                        <h2>Sousaphone</h2>
+                    </a>
+                </li>
             </ul>
+
         </div>
     </div>
 </body>

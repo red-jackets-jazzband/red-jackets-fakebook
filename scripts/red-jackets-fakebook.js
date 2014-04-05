@@ -6,6 +6,34 @@ var printer = null;
 
 var abcParser = null;
 
+
+var renderParams = {
+    'margin_for_scrollbar': 150,
+    'scale': 1,
+    'staffwidth': 500,
+    'score_height': 400,
+    'paddingtop': 15,
+    'paddingbottom': 30,
+    'paddingleft': 15,
+    'paddingright': 15,
+    'editable': false,
+    'chords': {
+        'hor_margin': 50,
+        'vert_margin': 10,
+        'height': 40,
+        'table': {
+            'stroke': '#666666',
+            'stroke-width': 0.5
+        },
+        'text': {
+            opacity: 100,
+            'font-family': 'serif',
+            'font-weight': 200,
+            'font-size': 20
+        }
+    }
+};
+
 function parse_song_list(data) {
 
     var songs = data.split('\n');
@@ -16,17 +44,21 @@ function parse_song_list(data) {
         var song_name = songs[i].split(",")[0]
         var song_path = songs_folder + '/' + songs[i].split(",")[1]
 
-        //$("select#song_menu").append("<option value=" + song_path + ">" + song_name + " </option>");
         $("#song_menu").append("<li data-path=" + song_path + ">" + song_name + " </li>");
     }
 }
 
-function init_render_stuff() {
+function reset_render_stuff() {
 
-    var screenWidth = 600;
+    var screenWidth = $(window).width() - renderParams.margin_for_scrollbar;
+    current_song.formatting.staffwidth = screenWidth - renderParams.paddingleft - renderParams.paddingright;
 
-    paper_chords = Raphael('chords', screenWidth, 0);
-    paper_score = Raphael('notation', screenWidth, 400);
+    if (paper_score !== null) {
+        var paper_scoreDom = paper_score.canvas;
+        paper_scoreDom.parentNode.removeChild(paper_scoreDom);
+    }
+
+    paper_score = Raphael('notation', screenWidth, renderParams.score_height);
     printer = new ABCPrinter(paper_score);
 }
 
@@ -39,50 +71,40 @@ function render_chords(chords_to_render) {
 
     var rows = Math.ceil(chords_to_render.length / cols);
 
-    var height = 40;
-    var width = 800 / cols;
+    var paper_width = $(window).width() - renderParams.margin_for_scrollbar;
+    var paper_heigth = rows * renderParams.chords.height + renderParams.paddingtop + renderParams.paddingbottom;
 
-    var margin = 30;
-
-    var paper_width = cols * width + 2 * margin;
-    var paper_heigth = rows * height + 2 * margin;
+    var width = (paper_width - renderParams.paddingleft - renderParams.paddingright) / cols;
 
     var x_offset = paper_width / 2 - width * (cols / 2);
-    var y_offset = margin;
+    var y_offset = renderParams.paddingtop;
 
-    var paperDom = paper_chords.canvas;
-    paperDom.parentNode.removeChild(paperDom);
+    if (paper_chords !== null) {
+        var paperDom = paper_chords.canvas;
+        paperDom.parentNode.removeChild(paperDom);
+    }
     paper_chords = Raphael('chords', paper_width, paper_heigth);
 
     for (var y = 0; y < rows; y++) {
         for (var x = 0; x < cols; x++) {
 
             var rect_x = x * width + x_offset;
-            var rect_y = y * height + y_offset;
+            var rect_y = y * renderParams.chords.height + y_offset;
 
-            var rect = paper_chords.rect(rect_x, rect_y, width, height);
-            rect.attr({
-                'stroke': '#666666',
-                'stroke-width': 0.5
-            });
+            var rect = paper_chords.rect(rect_x, rect_y, width, renderParams.chords.height);
+            rect.attr(renderParams.chords.table);
 
             var chord_idx = x + y * cols;
 
-            var chords = chords_to_render[chord_idx];
-            chords = chords.join("  - ");
+            if (chord_idx < chords_to_render.length) {
+                var chords = chords_to_render[chord_idx];
+                chords = chords.join("  - ");
 
-            //console.log("ID: " + chord_idx + " Chord: " + chord);
-            var text = paper_chords.text(rect_x + width / 2, rect_y + height / 2, chords);
-            text.attr({
-                opacity: 100,
-                'font-family': 'serif',
-                'font-weight': 200,
-                'font-size': 20
-            }).toFront();
+                var text = paper_chords.text(rect_x + width / 2, rect_y + renderParams.chords.height / 2, chords);
+                text.attr(renderParams.chords.text).toFront();
+            }
         }
     }
-
-
 }
 
 function render_song(song_to_render) {
@@ -98,10 +120,7 @@ function parse_string_to_abc_tune(text) {
     abcParser.parse(tunebook.tunes[0].abc); //TODO handle multiple tunes
     current_song = abcParser.getTune();
 
-    render_song(current_song);
-
-    var chord_scheme = parse_chord_scheme();
-    render_chords(chord_scheme);
+    redraw_everything();
     update_current_key();
 }
 
@@ -532,7 +551,7 @@ function load_songs() {
 
 function init_transpose_menu() {
 
-    var keys = ['Ab', 'A', 'A#', 'Bb', 'B', 'B#', 'Cb', 'C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'E#', 'Fb', 'F', 'F#', 'Gb', 'G', 'G#'];
+    var keys = ['A', 'Bb', 'B', 'C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#'];
 
     for (var i = 0; i < keys.length; i++) {
         $("#transpose_menu").append("<li data-key=" + keys[i] + ">" + keys[i] + " </li>");
@@ -547,22 +566,43 @@ function subscribe_to_events() {
 
     // Event handler window resize event
     $(window).bind('resize', function(e) {
-        console.log('render song called from resize');
-        render_song();
+        redraw_everything();
     });
 }
 
 function song_listview_event_handler(event) {
 
     var song_path = this.getAttribute('data-path');
+
+    $.mobile.loading('show', {
+        theme: "b",
+        text: "Loading " + this.text
+    });
     parse_song(song_path);
+    $.mobile.loading('hide');
 }
 
 function transpose_listview_event_handler(event) {
 
     var key = this.getAttribute('data-key');
+
+    $.mobile.loading('show', {
+        theme: "b",
+        text: "Transposing song to " + key
+    });
     transpose_song(key);
-    render_song(current_song);
+    redraw_everything();
+    $.mobile.loading('hide');
+}
+
+function redraw_everything() {
+    reset_render_stuff();
+
+    if (current_song !== null) {
+        render_song(current_song);
+        var chord_scheme = parse_chord_scheme();
+        render_chords(chord_scheme);
+    }
 }
 
 function init() {
@@ -572,7 +612,6 @@ function init() {
 
     init_transpose_menu();
     init_parsing_stuff();
-    init_render_stuff();
 
-    //parse_song($("select#song_menu").val());
+    redraw_everything();
 }
