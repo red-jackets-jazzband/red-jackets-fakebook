@@ -8,7 +8,7 @@ var abcParser = null;
 
 
 var renderParams = {
-    'margin_for_scrollbar': 150,
+    'margin_for_scrollbar': 0,
     'scale': 1,
     'staffwidth': 500,
     'score_height': 400,
@@ -585,14 +585,25 @@ function song_listview_event_handler(event) {
 function transpose_listview_event_handler(event) {
 
     var key = this.getAttribute('data-key');
+    transpose_and_redraw(key);
+}
 
-    $.mobile.loading('show', {
-        theme: "b",
-        text: "Transposing song to " + key
-    });
-    transpose_song(key);
-    redraw_everything();
-    $.mobile.loading('hide');
+function transpose_and_redraw(key) {
+
+    $.mobile.changePage('index.html#main');
+
+    if (current_song !== null) {
+        $.mobile.loading('show', {
+            theme: "b",
+            text: "Transposing song to " + key
+        });
+        transpose_song(key);
+        redraw_everything();
+        $.mobile.loading('hide');
+    } else {
+        alert("Choose a song first!");
+        $("#song_panel").panel("open");
+    }
 }
 
 function redraw_everything() {

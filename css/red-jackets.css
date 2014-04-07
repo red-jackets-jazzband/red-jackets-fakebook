@@ -40,3 +40,21 @@
  .red-jackets-notation {
      text-align:center;
  }
+ .red-jackets-landing-page-body {
+     /* IE10 Consumer Preview*/
+     background-image: -ms-radial-gradient(center, circle farthest-side, #404040 0%, #101010 100%);
+     /* Mozilla Firefox*/
+     background-image: -moz-radial-gradient(center, circle farthest-side, #404040 0%, #101010 100%);
+     /* Opera*/
+     background-image: -o-radial-gradient(center, circle farthest-side, #404040 0%, #101010 100%);
+     /* Webkit (Safari/Chrome 10)*/
+     background-image: -webkit-gradient(radial, center center, 0, center center, 477, color-stop(0, #404040), color-stop(1, #101010));
+     /* Webkit (Chrome 11+)*/
+     background-image: -webkit-radial-gradient(center, circle farthest-side, #404040 0%, #101010 100%);
+     /* W3C Markup, IE10 Release Preview */
+     background-image: radial-gradient(circle farthest-side at center, #404040 0%, #101010 100%);
+     text-align:center;
+     /* center horizontally */
+     vertical-align:middle;
+     /* center vertically */
+ }
