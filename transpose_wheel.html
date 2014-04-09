@@ -2,35 +2,10 @@
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <script type="text/javascript">
-    // This function is called when the circle is clicked.
-
-
-    function clickMe(svgShapeId) {
-
-        // Display the alert.
-        alert("You clicked the " + svgShapeId + " SVG UI element.");
-    }
-
-    function selectCurrentChord(svgShapeId) {
-
-        partThatWasClicked = document.getElementById(svgShapeId);
-
-        partThatWasClicked.setAttribute('stroke-width', 5);
-        partThatWasClicked.setAttribute('stroke', 'black');
-    }
-
-
-
-    var scale = Math.min($(window).width(), $(window).height() ) / 1024;
-
-    document.getElementById("transpose_wheel_svg").setAttribute('transform','scale('+scale+')';)
-    </script>
-
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
     <!-- Styling -->
-    <link rel="stylesheet" href="css/fonts.css" / type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="css/fonts.css" type="text/css" charset="utf-8" />
     <link rel="stylesheet" href="css/jquery.mobile-1.4.2.min.css" type="text/css" charset="utf-8" />
     <link rel="stylesheet" href="css/red-jackets.css" type="text/css" charset="utf-8" />
 
@@ -40,7 +15,7 @@
 
 </head>
 
-<body>
+<body onload="console.log('Transpose page loaded');;">
     <div data-role="page" id="transpose_wheel">
 
         <div class="red-jackets-title-bar" data-role="header" style="text-align:center;">
@@ -50,11 +25,9 @@
             </span>
 
         </div>
-        <div data-role="content" style="text-align:center;">
+        <div data-role="content" class="svg-wrap">
 
-
-
-            <svg id="transpose_wheel_svg" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="1024" width="1024" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/"  >
+            <svg id="transpose_wheel_svg" class="svg" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="1024" width="1024" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/">
                 <defs id="defs4">
                     <marker id="Arrow2Lend" refY="0.0" refX="0.0" orient="auto">
                         <path id="path11552" stroke-linejoin="round" d="M8.7186,4.0337l-10.926-4.0177,10.926-4.0177c-1.7455,2.3721-1.7355,5.6174,0,8.0354z" fill-rule="evenodd" transform="scale(1.1) rotate(180) translate(1,0)" stroke-width="0.62500000" />
@@ -245,6 +218,9 @@
                 </g>
             </svg>
 
+            <script type="text/javascript">
+            scaleElementToPage('transpose_wheel_svg');
+            </script>
         </div>
         <div data-role="footer">
             <h4>Footer</h4>

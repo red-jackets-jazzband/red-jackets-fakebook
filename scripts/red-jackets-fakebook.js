@@ -217,7 +217,8 @@ function parse_chord_scheme() {
             }
 
             if (element.chord !== undefined) {
-                current_measure.push(element.chord[0].name);
+                var chord = replace_accidental_with_utf8_char(element.chord[0].name);
+                current_measure.push(chord);
                 did_not_parse_chord_in_this_measure = false;
                 parsed_valid_chord = true;
             }
@@ -229,6 +230,12 @@ function parse_chord_scheme() {
         chords = [];
     }
     return chords;
+}
+
+function replace_accidental_with_utf8_char(note) {
+
+    return note.replace("b", "♭")
+        .replace("#", "♯");
 }
 
 function transpose_song(key) {
@@ -251,6 +258,7 @@ function transpose_song(key) {
         var transposed_key_signature = transpose_key(current_key, clef, interval);
 
         var line_of_notes = current_song.lines[i].staff[0].voices[0];
+
         var transposed_line = transpose_line(line_of_notes, interval, current_key_signature, transposed_key_signature);
 
         current_song.lines[i].staff[0].voices[0] = transposed_line;
@@ -486,7 +494,14 @@ function abc_note_to_teoria_note(abc_note) {
     };
 
     var abc_root_note = abc_note.pitches[0].pitch;
-    var string_root_note = pitches[abc_root_note];
+
+    // It could be negative
+    if (abc_root_note < 0) {
+        abc_root_note += 7;
+    }
+
+    //It could also be bigger than 13
+    var string_root_note = pitches[abc_root_note % 14];
 
     var string_root_note = add_accidental_to_string(string_root_note, abc_note)
 
@@ -529,6 +544,7 @@ function add_accidental_to_string(str_note, abc_note) {
         "flat": "b",
         "dblflat": "bb"
     }
+
     var teoria_root_note_accidental = "";
 
     var abc_root_note_accidental = abc_note.pitches[0].accidental
@@ -547,15 +563,6 @@ function create_nav_bars() {
 
 function load_songs() {
     $.get('songs/_index_of_songs.txt', parse_song_list, 'text');
-}
-
-function init_transpose_menu() {
-
-    var keys = ['A', 'Bb', 'B', 'C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#'];
-
-    for (var i = 0; i < keys.length; i++) {
-        $("#transpose_menu").append("<li data-key=" + keys[i] + ">" + keys[i] + " </li>");
-    }
 }
 
 function subscribe_to_events() {
@@ -606,6 +613,27 @@ function transpose_and_redraw(key) {
     }
 }
 
+function selectCurrentChord(svgShapeId) {
+
+    partThatWasClicked = document.getElementById(svgShapeId);
+
+    partThatWasClicked.setAttribute('stroke-width', 5);
+    partThatWasClicked.setAttribute('stroke', 'black');
+}
+
+function scaleElementToPage(element) {
+
+    var el = document.getElementById(element);
+
+    var width = el.getAttribute('width');
+    var height = el.getAttribute('height');
+
+    var scale = Math.min($(window).width() / width, $(window).height() / height);
+    console.log(scale);
+
+    el.setAttribute('transform', 'scale(' + scale + ')');
+}
+
 function redraw_everything() {
     reset_render_stuff();
 
@@ -621,7 +649,6 @@ function init() {
     subscribe_to_events();
     load_songs();
 
-    init_transpose_menu();
     init_parsing_stuff();
 
     redraw_everything();
