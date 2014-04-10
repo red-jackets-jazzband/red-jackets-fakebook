@@ -8,7 +8,7 @@ var abcParser = null;
 
 
 var renderParams = {
-    'margin_for_scrollbar': 0,
+    'margin_for_scrollbar': 20,
     'scale': 1,
     'staffwidth': 500,
     'score_height': 400,
@@ -44,7 +44,7 @@ function parse_song_list(data) {
         var song_name = songs[i].split(",")[0]
         var song_path = songs_folder + '/' + songs[i].split(",")[1]
 
-        $("#song_menu").append("<li data-path=" + song_path + ">" + song_name + " </li>");
+        $("#song_menu").append("<li data-path=" + song_path + " data-rel='close'>" + song_name + " </li>");
     }
 }
 
@@ -76,7 +76,7 @@ function render_chords(chords_to_render) {
 
     var width = (paper_width - renderParams.paddingleft - renderParams.paddingright) / cols;
 
-    var x_offset = paper_width / 2 - width * (cols / 2);
+    var x_offset = renderParams.paddingleft;
     var y_offset = renderParams.paddingtop;
 
     if (paper_chords !== null) {
@@ -207,7 +207,7 @@ function parse_chord_scheme() {
                     current_measure.push("%");
                 }
 
-                if (parsed_first_bar) {
+                if (current_measure.length > 0) {
                     chords.push(current_measure.slice(0));
                     current_measure = [];
                 }

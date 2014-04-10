@@ -40,6 +40,11 @@
  .red-jackets-notation {
      text-align:center;
  }
+ .red-jackets-content {
+     overflow-x: visible;
+     overflow-y: visible;
+     padding-bottom: 1em;
+ }
  .red-jackets-landing-page-body {
      /* IE10 Consumer Preview*/
      background-image: -ms-radial-gradient(center, circle farthest-side, #404040 0%, #101010 100%);
@@ -61,22 +66,37 @@
  .svg {
      max-height:100%;
      max-width: 100%;
+     vertical-align: middle;
  }
  .title-svg {
      max-height:100%;
      max-width: 60%;
+     vertical-align: middle;
  }
  .menu-button-svg {
      max-height:100%;
      max-width: 100%;
+     vertical-align: middle;
  }
-.transpose-button-svg {
+ .transpose-button-svg {
      max-height:100%;
      max-width: 100%;
+     vertical-align: middle;
  }
  .layout-button-svg {
      max-height:100%;
      max-width: 100%;
+     vertical-align: middle;
+ }
+ .chords-svg {
+     max-height:100%;
+     max-width: 100%;
+     vertical-align: middle;
+ }
+ .notation-svg {
+     max-height:100%;
+     max-width: 100%;
+     vertical-align: middle;
  }
  .svg-container {
      display: inline-block;
