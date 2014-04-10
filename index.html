@@ -37,19 +37,16 @@
 
 <body onload="init();">
     <div id="landing" data-role="page" class='red-jackets-landing-page-body'>
-        <div class="red-jackets-title-bar" data-role="header" style="text-align:center;">
-
-            <span class="red-jackets-logo">
-                Red Jackets Fakebook
-            </span>
-
+        <div class="red-jackets-title-bar" data-role="header">
+            <img class="title-svg" id="title-main" alt="image" src="images/logo.svg" vspace="2" />
         </div>
 
         <div data-role="content" class="svg-wrap">
 
             <img class="svg" id="splashLogo" alt="image" src="images/svg/icon.svg" vspace="2" />
+
             <script type="text/javascript">
-            setTimeout("$.mobile.changePage('index.html#main', {transition: 'flip', changeHash: false });", 5000);
+            setTimeout("$.mobile.changePage('index.html#main', {transition: 'flip', changeHash: false });", 3000);
             </script>
 
         </div>
@@ -58,24 +55,23 @@
 
     <div id="main" data-role="page">
 
-        <div class="red-jackets-title-bar" data-role="header" style="text-align:center;">
+        <div class="red-jackets-title-bar" data-role="header">
 
             <div style='float: left; text-align: left'>
                 <a href="#song_panel">
-                    <img alt="image" src="images/icon_redcircle_40.png" vspace="2" />
+                    <img class="menu-button-svg" alt="image" src="images/svg/icon_menu.svg" vspace="2" />
                 </a>
-
             </div>
-            <span class="red-jackets-logo">
-                Red Jackets Fakebook
-            </span>
+
+            <img class="title-svg" id="title-main" alt="image" src="images/logo.svg" vspace="2" />
+
             <div style='float: right; text-align: right'>
                 <a href="transpose_wheel.html" data-rel="pop-up">
-                    <img alt="image" src="images/icon_transpose_40.png" vspace="2" />
+                    <img class="transpose-button-svg" alt="image" src="images/svg/icon_transpose.svg" vspace="2" />
                 </a>
 
                 <a href="#layout_panel">
-                    <img alt="image" src="images/icon_band_40.png" vspace="2" />
+                    <img class="layout-button-svg" alt="image" src="images/svg/icon_layout.svg" vspace="2" />
                 </a>
             </div>
         </div>
@@ -87,7 +83,6 @@
 
         <div data-role="panel" data-position="left" data-display="push" data-theme="b" id="song_panel">
             <ul data-role="listview" id="song_menu" data-autodividers="true" data-filter="true" data-filter-placeholder="Search song..."></ul>
-
         </div>
 
         <div data-role="panel" data-position="right" data-display="push" data-theme="b" id="layout_panel">

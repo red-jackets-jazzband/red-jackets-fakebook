@@ -62,16 +62,31 @@
      max-height:100%;
      max-width: 100%;
  }
-
+ .title-svg {
+     max-height:100%;
+     max-width: 60%;
+ }
+ .menu-button-svg {
+     max-height:100%;
+     max-width: 100%;
+ }
+.transpose-button-svg {
+     max-height:100%;
+     max-width: 100%;
+ }
+ .layout-button-svg {
+     max-height:100%;
+     max-width: 100%;
+ }
  .svg-container {
-    display: inline-block;
-    position: relative;
-    width: 100%;
-    padding-bottom: 30%;
-    vertical-align: middle;
-    overflow: hidden;
-}
-/*
+     display: inline-block;
+     position: relative;
+     width: 100%;
+     padding-bottom: 30%;
+     vertical-align: middle;
+     overflow: hidden;
+ }
+ /*
 #transpose_wheel_svg {
     display: inline-block;
     position: absolute;
