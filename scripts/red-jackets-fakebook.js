@@ -503,18 +503,19 @@ function abc_note_to_teoria_note(abc_note) {
     //It could also be bigger than 13
     var string_root_note = pitches[abc_root_note % 14];
 
-    var string_root_note = add_accidental_to_string(string_root_note, abc_note)
+    string_root_note = add_accidental_to_string(string_root_note, abc_note)
 
-    var teoria_duration = abc_duration_to_teoria_duration(abc_note.abc_duration);
+    // Not needed now
+    //var teoria_duration = abc_duration_to_teoria_duration(abc_note.abc_duration);
 
-    return new teoria.note(string_root_note, teoria_duration)
+    return new teoria.note(string_root_note, 1.0)
 }
 
 function abc_duration_to_teoria_duration(abc_duration) {
 
     var inv_duration = 1.0 / abc_duration;
 
-    var undotted_power = Math.ceil(Math.log2(inv_duration));
+    var undotted_power = Math.ceil(Math.log(inv_duration) / Math.log(2));
     var undotted_duration = Math.pow(2, undotted_power);
 
     var remaining_duration = abc_duration - 1.0 / undotted_duration;
@@ -597,7 +598,7 @@ function transpose_listview_event_handler(event) {
 
 function transpose_and_redraw(key) {
 
-    $.mobile.changePage('index.html#main');
+    $.mobile.changePage($("#main"))
 
     if (current_song !== null) {
         $.mobile.loading('show', {
