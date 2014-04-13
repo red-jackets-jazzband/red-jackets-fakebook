@@ -1,0 +1,29 @@
+{
+  "name": "RedJacketsFakebook",
+  "version": "0.0.0",
+  "description": "Traditional Jazz Fakebook of the Red Jackets Jazzband",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "keywords": [
+    "jazz",
+    "music",
+    "notation"
+  ],
+  "author": "Ben Spoor",
+  "license": "LGPLv2",
+  "gitHead": "cc4289e6556e7636a810ed6b0a11f44061b04279",
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-uglify": "~0.4.0",
+    "grunt-contrib-cssmin": "~0.9.0",
+    "grunt-contrib-qunit": "~0.4.0",
+    "grunt-contrib-concat": "~0.4.0",
+    "grunt-natural-docs": "~0.1.1",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-clean": "~0.5.0"
+  }
+}
