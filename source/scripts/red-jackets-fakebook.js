@@ -6,7 +6,6 @@ var printer = null;
 
 var abcParser = null;
 
-
 var renderParams = {
     'margin_for_scrollbar': 20,
     'scale': 1,
@@ -43,6 +42,7 @@ var renderParams = {
       data - The list of songs, with on each line a name
              followed by a comma and the path. (No whitespaces around the comma)
 */
+
 function parse_song_list(data) {
 
     var songs = data.split('\n');
@@ -61,6 +61,7 @@ function parse_song_list(data) {
    Function: reset_render_stuff
    Creates two new papers using the current screensize
 */
+
 function reset_render_stuff() {
 
     var screenWidth = $(window).width() - renderParams.margin_for_scrollbar;
@@ -83,6 +84,7 @@ function reset_render_stuff() {
 
       chords_to_render - List of lists. A list per measure contaning the Chords
 */
+
 function render_chords(chords_to_render) {
 
     var cols = 4;
@@ -136,91 +138,11 @@ function render_chords(chords_to_render) {
 
       song_to_render - A song in the abcjs intermediate format
 */
+
 function render_song(song_to_render) {
 
     paper_score.clear();
     printer.printABC(song_to_render);
-}
-
-/*
-   Function: parse_string_to_abc_tune
-   Parses a string into the abcjs intermediate format used fir rendering
-
-   Parameters:
-
-      text - A string containing a valid abc file
-*/
-function parse_string_to_abc_tune(text) {
-
-    console.log("parse_string_to_abc_tune");
-
-    var tunebook = new AbcTuneBook(text);
-
-    abcParser.parse(tunebook.tunes[0].abc); //TODO handle multiple tunes
-    current_song = abcParser.getTune();
-
-    redraw_everything();
-    update_current_key();
-
-}
-
-/*
-   Function: update_current_key
-   Parses the current key from the current_song and does all update actions
-*/
-function update_current_key() {
-
-    var key = parse_key_signature(current_song.lines[0].staff[0].key);
-
-    key = teoria_chord_name_to_abc_chord_name(key);
-
-    $('#transpose_menu option[value=' + key + ']').attr('selected', true);
-}
-
-/*
-   Function: init_parsing_stuff
-   Creates the AbcParse object
-*/
-function init_parsing_stuff() {
-
-    var parserParams = {
-        print: false, //pay attention to margins and other formatting commands that don't make sense in a web page
-        header_only: false, //only parse the header
-        stop_on_warning: false //only parse until the first warning is encountered
-    };
-
-    abcParser = new AbcParse(parserParams);
-}
-
-/*
-   Funcion: parse_song
-   Retrieves the file from path and parses it
-
-   Parameters:
-
-       path - File path of the song to parse
-
-    See Also:
-       <parse_string_to_abc_tune>
-*/
-function parse_song(path) {
-
-    console.log("parse_song " + path + " from " + document.location.pathname);
-    $.get(path, parse_string_to_abc_tune, 'text');
-
-}
-
-/*
-   Funcion: get_width
-   Gets the current screenwidth and keeps in mind the orientation of the screen
-
-   Returns:
-       width - Screen width of the device
-*/
-function get_width() {
-    var ori = $(window).orientation;
-    var width = (ori === 90 || ori === -90) ? $(window).height() : $(window).width();
-    return width;
 }
 
 /*
@@ -234,6 +156,7 @@ function get_width() {
    Returns:
        key - A string representing the key
 */
+
 function parse_key_signature(key_signature) {
 
     // Todo: seven accidentals case
@@ -263,12 +186,140 @@ function parse_key_signature(key_signature) {
 }
 
 /*
+   Function: teoria_chord_name_to_abc_chord_name
+   Teoria chords have slightly different formatting
+
+   Parmeters:
+
+      teoria_chord_name - A string representing a chord following teoria syntax
+
+    Returns:
+
+       abc_chord - renames the string to abc chord syntax
+*/
+
+function teoria_chord_name_to_abc_chord_name(teoria_chord_name) {
+
+    return teoria_chord_name.replace("M", "");
+}
+
+/*
+   Function: update_current_key
+   Parses the current key from the current_song and does all update actions
+*/
+
+function update_current_key() {
+
+    var key = parse_key_signature(current_song.lines[0].staff[0].key);
+
+    key = teoria_chord_name_to_abc_chord_name(key);
+
+    $('#transpose_menu option[value=' + key + ']').attr('selected', true);
+}
+
+/*
+   Function: parse_string_to_abc_tune
+   Parses a string into the abcjs intermediate format used fir rendering
+
+   Parameters:
+
+      text - A string containing a valid abc file
+*/
+
+function parse_string_to_abc_tune(text) {
+
+    console.log("parse_string_to_abc_tune");
+
+    var tunebook = new AbcTuneBook(text);
+
+    abcParser.parse(tunebook.tunes[0].abc); //TODO handle multiple tunes
+    current_song = abcParser.getTune();
+
+    redraw_everything();
+    update_current_key();
+
+}
+
+
+
+/*
+    Function: init_parsing_stuff
+
+    Creates the AbcParse object with parser params
+
+    - print:           pay attention to margins and other formatting commands that don't make sense in a web page
+    - header_only:     only parse the header
+    - stop_on_warning: only parse until the first warning is encountered
+*/
+
+function init_parsing_stuff() {
+
+    var parserParams = {
+        print: false,
+        header_only: false,
+        stop_on_warning: false
+    };
+
+    abcParser = new AbcParse(parserParams);
+}
+
+/*
+    Funcion: parse_song
+    Retrieves the file from path and parses it
+
+    Parameters:
+
+       path - File path of the song to parse
+*/
+
+function parse_song(path) {
+
+    console.log("parse_song " + path + " from " + document.location.pathname);
+    $.get(path, parse_string_to_abc_tune, 'text');
+
+}
+
+/*
+   Funcion: get_width
+   Gets the current screenwidth and keeps in mind the orientation of the screen
+
+   Returns:
+       width - Screen width of the device
+*/
+
+function get_width() {
+    var ori = $(window).orientation;
+    var width = (ori === 90 || ori === -90) ? $(window).height() : $(window).width();
+    return width;
+}
+
+
+/*
+   Funcion: replace_accidental_with_utf8_char
+   Replaces the sharp and flat signs with the official unicode chars
+
+   Parameters:
+
+       note - A string containing # or b signs
+
+   Returns:
+       note - with the b and # replaced
+*/
+
+function replace_accidental_with_utf8_char(note) {
+
+    return note.replace("b", "♭")
+        .replace("#", "♯");
+}
+
+/*
    Funcion: parse_chord_scheme
    Reads the chords from the current_song abcjs intermediate format into a list per measure with the chords
 
    Returns:
        chords - A list of lists with the chords per measure
 */
+
 function parse_chord_scheme() {
 
     var chords = [];
@@ -284,7 +335,7 @@ function parse_chord_scheme() {
 
         for (var line_idx = 0; line_idx < line.length; line_idx++) {
 
-            element = line[line_idx];
+            var element = line[line_idx];
 
             if (element.el_type === "bar") {
 
@@ -318,20 +369,172 @@ function parse_chord_scheme() {
 }
 
 /*
-   Funcion: replace_accidental_with_utf8_char
-   Replaces the sharp and flat signs with the official unicode chars
+   Funcion: key_signature_from_teoria_key
+   Returns all accidentals that come with a key
 
    Parameters:
 
-       note - A string containing # or b signs
+       key - A string representing the teoria key
+       clef - To place the accidentals on the correct bars the clef is needed
 
    Returns:
-       note - with the b and # replaced
-*/
-function replace_accidental_with_utf8_char(note) {
 
-    return note.replace("b", "♭")
-        .replace("#", "♯");
+       key_signature - All accidentals on the correct positon for the clef
+*/
+
+function key_signature_from_teoria_key(key, clef) {
+
+    parse_header = new AbcParseHeader(undefined, undefined, undefined, undefined);
+
+    var abc_key_name = teoria_chord_name_to_abc_chord_name(key);
+    var acc = key_signatures[abc_key_name];
+
+    var key_sig = {
+        accidentals: acc
+    };
+    //Add offset for the clef
+    parse_header.addPosToKey(clef, key_sig);
+
+    return key_sig;
+}
+
+function add_acc_from_key_signature(abc_note, key) {
+
+    if (key.accidentals === undefined) {
+        return;
+    }
+
+    var abc_root_note = abc_note.pitches[0];
+
+    for (var i = 0; i < key.accidentals.length; i++) {
+
+        if ((abc_root_note.pitch % 8) === (key.accidentals[i].verticalPos % 8)) {
+
+            switch (abc_root_note.accidental) {
+
+                case "":
+                    abc_root_note.accidental = key.accidentals[i].acc;
+                    break;
+                case key.accidentals[i].acc:
+                    abc_root_note.accidental = "dbl" + abc_root_note.accidental;
+                    break;
+            }
+        }
+    }
+
+    //console.dir(abc_root_note);
+}
+
+function remove_acc_from_key_signature(abc_note, key) {
+
+    if (key.accidentals === undefined) {
+        return;
+    }
+
+    var abc_root_note = abc_note.pitches[0];
+
+    for (var i = 0; i < key.accidentals.length; i++) {
+
+        if (abc_root_note.pitch % 8 === key.accidentals[i].verticalPos % 8) {
+
+            switch (abc_root_note.accidental) {
+
+                case "":
+                    abc_root_note.accidental = "natural";
+                    break;
+                case key.accidentals[i].acc:
+                    abc_root_note.accidental = "";
+                    break;
+            }
+        }
+    }
+}
+
+
+/*
+   Funcion: transpose_note
+   Transposes the note of a song with the interval, taking into account the key signatures before and after
+
+   Parameters:
+
+       abc_note - The note to transpose
+       teoria_interval - The interval which is used to transpose the note
+       current_key_signature - The key signature before transposing
+       transposed_key_signature - The key signature after transposing
+
+   Returns:
+
+       note - Transposed note
+
+    See also:
+
+    <add_acc_from_key_signature> <remove_acc_from_key_signature>
+*/
+
+function transpose_note(abc_note, teoria_interval, current_key_signature, transposed_key_signature) {
+
+    // If there is a chord, transpose it
+    if (abc_note.chord !== undefined) {
+        abc_note.chord[0].name = transpose_chord(abc_note.chord[0].name, teoria_interval);
+    }
+
+    // If it is a rest do nothing with note
+    if (abc_note.pitches === undefined) {
+        return abc_note;
+    }
+
+    add_acc_from_key_signature(abc_note, current_key_signature);
+
+    // parse the note
+    var teoria_note = abc_note_to_teoria_note(abc_note);
+
+    // transpose
+    var intv = teoria_interval.toString();
+    var transposed_note = teoria_note.interval(intv);
+    var transposed_abc_note = teoria_note_to_abc_note(transposed_note);
+
+    remove_acc_from_key_signature(transposed_abc_note, transposed_key_signature);
+
+    //return it
+    abc_note.pitches[0].pitch = transposed_abc_note.pitches[0].pitch;
+    abc_note.pitches[0].accidental = transposed_abc_note.pitches[0].accidental;
+    abc_note.pitches[0].verticalPos = transposed_abc_note.pitches[0].verticalPos;
+
+    abc_note.averagepitch = transposed_abc_note.pitches[0].pitch;
+    abc_note.minpitch = transposed_abc_note.pitches[0].pitch;
+    abc_note.maxpitch = transposed_abc_note.pitches[0].pitch;
+
+    return abc_note;
+}
+
+function transpose_line(line, teoria_interval, current_key, transposed_key) {
+
+    var transposed_line = [];
+
+    for (var i = 0; i < line.length; i++) {
+
+        var element = line[i];
+
+        switch (element.el_type) {
+
+            case "note":
+                transposed_line.push(transpose_note(element, teoria_interval, current_key, transposed_key));
+                break;
+            default:
+                transposed_line.push(element);
+                break;
+        }
+    }
+
+    return transposed_line;
+}
+
+function transpose_key(key, clef, teoria_interval) {
+
+    var transposed_key = teoria.chord(key);
+    transposed_key.transpose(teoria_interval.toString());
+
+    return key_signature_from_teoria_key(transposed_key.toString(), clef);
 }
 
 function transpose_song(key) {
@@ -342,7 +545,7 @@ function transpose_song(key) {
 
     console.log("Transpose from " + current_key + " to " + key);
 
-    interval = teoria.interval.between(teoria.note(current_key), teoria.note(key));
+    var interval = teoria.interval.between(teoria.note(current_key), teoria.note(key));
 
     for (var i = 0; i < current_song.lines.length; i++) {
 
@@ -369,57 +572,6 @@ function transpose_song(key) {
     return false;
 }
 
-function transpose_line(line, teoria_interval, current_key, transposed_key) {
-
-    var transposed_line = [];
-
-    for (var i = 0; i < line.length; i++) {
-
-        element = line[i];
-
-        switch (element.el_type) {
-
-            case "note":
-                transposed_line.push(transpose_note(element, teoria_interval, current_key, transposed_key));
-                break;
-            default:
-                transposed_line.push(element);
-                break;
-        }
-    }
-
-    return transposed_line;
-}
-
-function key_signature_from_teoria_key(key, clef) {
-
-    parse_header = new AbcParseHeader(undefined, undefined, undefined, undefined);
-
-    var abc_key_name = teoria_chord_name_to_abc_chord_name(key);
-
-    var acc = key_signatures[abc_key_name];
-
-    var key_sig = {
-        accidentals: acc
-    };
-    parse_header.addPosToKey(clef, key_sig);
-
-    return key_sig;
-}
-
-function transpose_key(key, clef, teoria_interval) {
-
-    var transposed_key = teoria.chord(key);
-    transposed_key.transpose(teoria_interval.toString());
-
-    return key_signature_from_teoria_key(transposed_key.toString(), clef);
-}
-
-function teoria_chord_name_to_abc_chord_name(teoria_chord_name) {
-
-    return teoria_chord_name.replace("M", "");
-}
-
 function transpose_chord(abc_chord, teoria_interval) {
 
     var chord = teoria.chord(abc_chord);
@@ -428,91 +580,7 @@ function transpose_chord(abc_chord, teoria_interval) {
     return chord.name;
 }
 
-function transpose_note(abc_note, teoria_interval, current_key, transposed_key) {
 
-    // If there is a chord, transpose it
-    if (abc_note.chord !== undefined) {
-        abc_note.chord[0].name = transpose_chord(abc_note.chord[0].name, teoria_interval);
-    }
-
-    // If it is a rest do nothing with note
-    if (abc_note.pitches === undefined) {
-        return abc_note;
-    }
-
-    add_acc_from_key_signature(abc_note, current_key);
-
-    // parse the note
-    teoria_note = abc_note_to_teoria_note(abc_note);
-
-    // transpose
-    intv = teoria_interval.toString();
-    transposed_note = teoria_note.interval(intv);
-    transposed_abc_note = teoria_note_to_abc_note(transposed_note);
-
-    remove_acc_from_key_signature(transposed_abc_note, transposed_key);
-
-    //return it
-    abc_note.pitches[0].pitch = transposed_abc_note.pitches[0].pitch;
-    abc_note.pitches[0].accidental = transposed_abc_note.pitches[0].accidental;
-    abc_note.pitches[0].verticalPos = transposed_abc_note.pitches[0].verticalPos;
-
-    abc_note.averagepitch = transposed_abc_note.pitches[0].pitch;
-    abc_note.minpitch = transposed_abc_note.pitches[0].pitch;
-    abc_note.maxpitch = transposed_abc_note.pitches[0].pitch;
-
-    return abc_note;
-}
-
-function add_acc_from_key_signature(abc_note, key) {
-
-    if (key.accidentals === undefined)
-        return;
-
-    var abc_root_note = abc_note.pitches[0];
-
-    for (var i = 0; i < key.accidentals.length; i++) {
-
-        if ((abc_root_note.pitch % 8) === (key.accidentals[i].verticalPos % 8)) {
-
-            switch (abc_root_note.accidental) {
-
-                case "":
-                    abc_root_note.accidental = key.accidentals[i].acc;
-                    break;
-                case key.accidentals[i].acc:
-                    abc_root_note.accidental = "dbl" + abc_root_note.accidental;
-                    break;
-            }
-        }
-    }
-
-    //console.dir(abc_root_note);
-}
-
-function remove_acc_from_key_signature(abc_note, key) {
-
-    if (key.accidentals === undefined)
-        return;
-
-    var abc_root_note = abc_note.pitches[0];
-
-    for (var i = 0; i < key.accidentals.length; i++) {
-
-        if (abc_root_note.pitch % 8 === key.accidentals[i].verticalPos % 8) {
-
-            switch (abc_root_note.accidental) {
-
-                case "":
-                    abc_root_note.accidental = "natural";
-                    break;
-                case key.accidentals[i].acc:
-                    abc_root_note.accidental = "";
-                    break;
-            }
-        }
-    }
-}
 
 function teoria_note_to_abc_note(teoria_note) {
 
@@ -591,8 +659,9 @@ function abc_note_to_teoria_note(abc_note) {
     var abc_root_note = abc_note.pitches[0].pitch;
     var pitch_idx = abc_root_note % 14;
 
-    while (pitch_idx < 0)
+    while (pitch_idx < 0) {
         pitch_idx += 7;
+    }
 
     var string_root_note = pitches[pitch_idx];
 
@@ -651,6 +720,7 @@ function abc_duration_to_teoria_duration(abc_duration) {
 /*
  
  */
+
 function add_accidental_to_string(str_note, abc_note) {
 
     var accidentals = {
@@ -731,7 +801,7 @@ function transpose_and_redraw(key) {
 
 function selectCurrentChord(svgShapeId) {
 
-    partThatWasClicked = document.getElementById(svgShapeId);
+    var partThatWasClicked = document.getElementById(svgShapeId);
 
     partThatWasClicked.setAttribute('stroke-width', 5);
     partThatWasClicked.setAttribute('stroke', 'black');

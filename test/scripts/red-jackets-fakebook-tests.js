@@ -36,6 +36,70 @@ create_key_signature = function(key) {
 
     var key_signature = null;
     switch (key) {
+        case 'CbM':
+        case 'Abm':
+            key_signature = {
+                "accidentals": [{
+                    "acc": "flat",
+                    "note": "B",
+                    "verticalPos": 6
+                }, {
+                    "acc": "flat",
+                    "note": "e",
+                    "verticalPos": 9
+                }, {
+                    "acc": "flat",
+                    "note": "A",
+                    "verticalPos": 5
+                }, {
+                    "acc": "flat",
+                    "note": "d",
+                    "verticalPos": 8
+                }, {
+                    "acc": "flat",
+                    "note": "G",
+                    "verticalPos": 4
+                }, {
+                    "acc": "flat",
+                    "note": "c",
+                    "verticalPos": 7
+                }, {
+                    "acc": "flat",
+                    "note": "f",
+                    "verticalPos": 10
+                }]
+            };
+            break;
+        case 'GbM':
+        case 'Ebm':
+            key_signature = {
+                "accidentals": [{
+                    "acc": "flat",
+                    "note": "B",
+                    "verticalPos": 6
+                }, {
+                    "acc": "flat",
+                    "note": "e",
+                    "verticalPos": 9
+                }, {
+                    "acc": "flat",
+                    "note": "A",
+                    "verticalPos": 5
+                }, {
+                    "acc": "flat",
+                    "note": "d",
+                    "verticalPos": 8
+                }, {
+                    "acc": "flat",
+                    "note": "G",
+                    "verticalPos": 4
+                }, {
+                    "acc": "flat",
+                    "note": "c",
+                    "verticalPos": 7
+                }]
+            };
+            break;
         case 'DbM':
         case 'Bbm':
             key_signature = {
@@ -197,9 +261,7 @@ create_key_signature = function(key) {
                 }]
             };
             break;
-        case 'CbM':
         case 'BM':
-        case 'abm':
         case 'g#m':
             key_signature = {
                 "accidentals": [{
@@ -224,6 +286,71 @@ create_key_signature = function(key) {
                     "verticalPos": 5
                 }]
             };
+            break;
+        case 'F#M':
+        case 'D#m':
+            key_signature = {
+                "accidentals": [{
+                    "acc": "sharp",
+                    "note": "f",
+                    "verticalPos": 10
+                }, {
+                    "acc": "sharp",
+                    "note": "c",
+                    "verticalPos": 7
+                }, {
+                    "acc": "sharp",
+                    "note": "g",
+                    "verticalPos": 11
+                }, {
+                    "acc": "sharp",
+                    "note": "d",
+                    "verticalPos": 8
+                }, {
+                    "acc": "sharp",
+                    "note": "A",
+                    "verticalPos": 5
+                }, {
+                    "acc": "sharp",
+                    "note": "e",
+                    "verticalPos": 9
+                }]
+            };
+            break;
+        case 'C#M':
+        case 'A#m':
+            key_signature = {
+                "accidentals": [{
+                    "acc": "sharp",
+                    "note": "f",
+                    "verticalPos": 10
+                }, {
+                    "acc": "sharp",
+                    "note": "c",
+                    "verticalPos": 7
+                }, {
+                    "acc": "sharp",
+                    "note": "g",
+                    "verticalPos": 11
+                }, {
+                    "acc": "sharp",
+                    "note": "d",
+                    "verticalPos": 8
+                }, {
+                    "acc": "sharp",
+                    "note": "A",
+                    "verticalPos": 5
+                }, {
+                    "acc": "sharp",
+                    "note": "e",
+                    "verticalPos": 9
+                }, {
+                    "acc": "sharp",
+                    "note": "B",
+                    "verticalPos": 6
+                }]
+            };
+
 
     }
 
@@ -616,6 +743,26 @@ test('b-note', function() {
 
 });
 
+module('key_signature_from_teoria_key');
+test('default', function() {
+    var clef = create_clef("treble");
+
+    deepEqual(key_signature_from_teoria_key('C', clef), create_key_signature("CM"));
+    deepEqual(key_signature_from_teoria_key('C#', clef), create_key_signature("C#M"));
+    deepEqual(key_signature_from_teoria_key('D', clef), create_key_signature("DM"));
+    deepEqual(key_signature_from_teoria_key('D#', clef), create_key_signature("EbM"));
+    deepEqual(key_signature_from_teoria_key('E', clef), create_key_signature("EM"));
+    deepEqual(key_signature_from_teoria_key('F', clef), create_key_signature("FM"));
+    deepEqual(key_signature_from_teoria_key('F#', clef), create_key_signature("F#M"));
+    deepEqual(key_signature_from_teoria_key('G', clef), create_key_signature("GM"));
+    deepEqual(key_signature_from_teoria_key('G#', clef), create_key_signature("AbM"));
+    deepEqual(key_signature_from_teoria_key('A', clef), create_key_signature("AM"));
+    deepEqual(key_signature_from_teoria_key('A#', clef), create_key_signature("BbM"));
+    deepEqual(key_signature_from_teoria_key('B', clef), create_key_signature("BM"));
+
+
+});
+
 module('transpose_key');
 test('Perfect interval', function() {
 
@@ -635,7 +782,7 @@ test('Major interval', function() {
     deepEqual(transpose_key("C", clef, teoria.interval('M2')), create_key_signature("DM"), 'Test transpose key C with M2 to DM');
     deepEqual(transpose_key("C", clef, teoria.interval('M3')), create_key_signature("EM"), 'Test transpose key C with M3 to EM');
     deepEqual(transpose_key("C", clef, teoria.interval('M6')), create_key_signature("AM"), 'Test transpose key C with M6 to AM');
-    deepEqual(transpose_key("C", clef, teoria.interval('M7')), create_key_signature("CbM"), 'Test transpose key C with M7 to CbM');
+    deepEqual(transpose_key("C", clef, teoria.interval('M7')), create_key_signature("BM"), 'Test transpose key C with M7 to BM');
 
 });
 test('Minor interval', function() {
@@ -653,14 +800,28 @@ test('Augmented interval', function() {
     var clef = create_clef("treble");
     var current_key_signature = create_key_signature("CM");
 
-    deepEqual(transpose_key("C", clef, teoria.interval('A1')), create_key_signature("DbM"), 'Test transpose key C with A1 to DbM');
+    deepEqual(transpose_key("C", clef, teoria.interval('A1')), create_key_signature("C#M"), 'Test transpose key C with A1 to C#M');
     deepEqual(transpose_key("C", clef, teoria.interval('A2')), create_key_signature("EbM"), 'Test transpose key C with A2 to EbM');
-    deepEqual(transpose_key("C", clef, teoria.interval('A3')), create_key_signature("AbM"), 'Test transpose key C with A3 to AbM');
-    deepEqual(transpose_key("C", clef, teoria.interval('A4')), create_key_signature("BbM"), 'Test transpose key C with A4 to BbM');
-    deepEqual(transpose_key("C", clef, teoria.interval('A5')), create_key_signature("BbM"), 'Test transpose key C with A4 to BbM');
-    deepEqual(transpose_key("C", clef, teoria.interval('A6')), create_key_signature("BbM"), 'Test transpose key C with A4 to BbM');
-    deepEqual(transpose_key("C", clef, teoria.interval('A7')), create_key_signature("BbM"), 'Test transpose key C with A4 to BbM');
-    deepEqual(transpose_key("C", clef, teoria.interval('A8')), create_key_signature("BbM"), 'Test transpose key C with A4 to BbM');
+    deepEqual(transpose_key("C", clef, teoria.interval('A3')), create_key_signature("FM"), 'Test transpose key C with A3 to FM');
+    deepEqual(transpose_key("C", clef, teoria.interval('A4')), create_key_signature("F#M"), 'Test transpose key C with A4 to F#M');
+    deepEqual(transpose_key("C", clef, teoria.interval('A5')), create_key_signature("AbM"), 'Test transpose key C with A5 to AbM');
+    deepEqual(transpose_key("C", clef, teoria.interval('A6')), create_key_signature("BbM"), 'Test transpose key C with A6 to BbM');
+    deepEqual(transpose_key("C", clef, teoria.interval('A7')), create_key_signature("CM"), 'Test transpose key C with A7 to CM');
+    deepEqual(transpose_key("C", clef, teoria.interval('A8')), create_key_signature("C#M"), 'Test transpose key C with A8 to C#M');
+});
+test('Diminished interval', function() {
+
+    var clef = create_clef("treble");
+    var current_key_signature = create_key_signature("CM");
+
+    deepEqual(transpose_key("C", clef, teoria.interval('d1')), create_key_signature("CbM"), 'Test transpose key C with d1 to C#M');
+    deepEqual(transpose_key("C", clef, teoria.interval('d2')), create_key_signature("EbM"), 'Test transpose key C with d2 to EbM');
+    deepEqual(transpose_key("C", clef, teoria.interval('d3')), create_key_signature("FM"), 'Test transpose key C with d3 to FM');
+    deepEqual(transpose_key("C", clef, teoria.interval('d4')), create_key_signature("F#M"), 'Test transpose key C with d4 to F#M');
+    deepEqual(transpose_key("C", clef, teoria.interval('d5')), create_key_signature("AbM"), 'Test transpose key C with d5 to AbM');
+    deepEqual(transpose_key("C", clef, teoria.interval('d6')), create_key_signature("BbM"), 'Test transpose key C with d6 to BbM');
+    deepEqual(transpose_key("C", clef, teoria.interval('d7')), create_key_signature("CM"), 'Test transpose key C with d7 to CM');
+    deepEqual(transpose_key("C", clef, teoria.interval('d8')), create_key_signature("C#M"), 'Test transpose key C with d8 to C#M');
 });
 
 
@@ -672,53 +833,130 @@ test('Perfect', function() {
     var clef = create_clef("treble");
 
     var current_key_signature = create_key_signature("CM");
-    var interval = teoria.interval('P1');
-    var transposed_key_signature = transpose_key(current_key_signature, clef, interval);
 
-    transpose_note(note, interval, current_key_signature, transposed_key_signature);
-    /*
+    var test_set = [{
+        interval: 'P1',
+        pitch: 0,
+        accidental: '',
+        text_pitch: 'Transpose a C note a perfect first up results in C note',
+        text_acc: 'Transpose a C note a perfect first up results in no accidental'
+    }, {
+        interval: 'P4',
+        pitch: 3,
+        accidental: '',
+        text_pitch: 'Transpose a C note a perfect fourth up results in F note',
+        text_acc: 'Transpose a C note a perfect fourth up results in no accidental'
+    }, {
+        interval: 'P5',
+        pitch: 4,
+        accidental: '',
+        text_pitch: 'Transpose a C note a perfect fifth up results in G note',
+        text_acc: 'Transpose a C note a perfect fifth up results in no accidental'
+    }, {
+        interval: 'P8',
+        pitch: 7,
+        accidental: '',
+        text_pitch: 'Transpose a C note a perfect eighth up results in C note',
+        text_acc: 'Transpose a C note a perfect eighth up results in no accidental'
+    }];
 
-    deepEqual(transpose_note(note, clef, 'C', 'C').pitches[0].pitch, 0, 'Transpose a C note a perfect first up results in D note');
-    deepEqual(transpose_note(create_note(), create_clef("treble"), 'C', 'C').pitches[0].accidental, "", 'Transpose a C note a perfect first up results in no accidental');
+    test_set.forEach(function(set) {
 
-    deepEqual(transpose_note(create_note(), create_clef("treble"), teoria.interval('P4')).pitches[0].pitch, 3, 'Transpose a C note a perfect fourth up results in E note');
-    deepEqual(transpose_note(create_note(), create_clef("treble"), teoria.interval('P4')).pitches[0].accidental, "", 'Transpose a C note a perfect fourth up results in no accidental');
+        var intv = teoria.interval(set.interval);
+        var transposed_key_signature = transpose_key("C", clef, intv);
+        var transposed_note = transpose_note(note, intv, current_key_signature, transposed_key_signature);
 
-    deepEqual(transpose_note(create_note(), create_clef("treble"), teoria.interval('P5')).pitches[0].pitch, 4, 'Transpose a C note a perfect fifth up results in E note');
-    deepEqual(transpose_note(create_note(), create_clef("treble"), teoria.interval('P5')).pitches[0].accidental, "", 'Transpose a C note a perfect fifth up results in no accidental');
-
-    deepEqual(transpose_note(create_note(), create_clef("treble"), teoria.interval('P8')).pitches[0].pitch, 7, 'Transpose a C note a perfect eighth up results in E note');
-    deepEqual(transpose_note(create_note(), create_clef("treble"), teoria.interval('P8')).pitches[0].accidental, "", 'Transpose a C note a perfect eighth up results in no accidental');*/
+        deepEqual(transposed_note.pitches[0].pitch, set.pitch, set.text_pitch);
+        deepEqual(transposed_note.pitches[0].accidental, set.accidental, set.text_acc);
+    });
 });
 
 test('Major', function() {
 
-    deepEqual(transpose_note(create_note(), teoria.interval('M2')).pitches[0].pitch, 1, 'Transpose a C note a major second up results in D note');
-    deepEqual(transpose_note(create_note(), teoria.interval('M2')).pitches[0].accidental, "", 'Transpose a C note a major second up results in no accidental');
+    var note = create_note();
+    var clef = create_clef("treble");
 
-    deepEqual(transpose_note(create_note(), teoria.interval('M3')).pitches[0].pitch, 2, 'Transpose a C note a major third up results in E note');
-    deepEqual(transpose_note(create_note(), teoria.interval('M3')).pitches[0].accidental, "", 'Transpose a C note a major third up results in no accidental');
+    var current_key_signature = create_key_signature("CM");
 
-    deepEqual(transpose_note(create_note(), teoria.interval('M6')).pitches[0].pitch, 5, 'Transpose a C note a major sixth up results in E note');
-    deepEqual(transpose_note(create_note(), teoria.interval('M6')).pitches[0].accidental, "", 'Transpose a C note a major sixth up results in no accidental');
+    var test_set = [{
+        interval: 'M2',
+        pitch: 1,
+        accidental: '',
+        text_pitch: 'Transpose a C note a major second up results in D note',
+        text_acc: 'Transpose a C note a major second up results in no accidental'
+    }, {
+        interval: 'M3',
+        pitch: 3,
+        accidental: '',
+        text_pitch: 'Transpose a C note a major third up results in E note',
+        text_acc: 'Transpose a C note a major third up results in no accidental'
+    }, {
+        interval: 'M6',
+        pitch: 8,
+        accidental: '',
+        text_pitch: 'Transpose a C note a major sixth up results in G note',
+        text_acc: 'Transpose a C note a major sixth up results in no accidental'
+    }, {
+        interval: 'M7',
+        pitch: 14,
+        accidental: 'sharp',
+        text_pitch: 'Transpose a C note a major seventh up results in C note',
+        text_acc: 'Transpose a C note a major seventh up results in no accidental'
+    }];
 
-    deepEqual(transpose_note(create_note(), teoria.interval('M7')).pitches[0].pitch, 6, 'Transpose a C note a major seventh up results in E note');
-    deepEqual(transpose_note(create_note(), teoria.interval('M7')).pitches[0].accidental, "", 'Transpose a C note a major seventh up results in no accidental');
+    test_set.forEach(function(set) {
+
+        var intv = teoria.interval(set.interval);
+        var transposed_key_signature = transpose_key("C", clef, intv);
+        var transposed_note = transpose_note(note, intv, current_key_signature, transposed_key_signature);
+
+        deepEqual(transposed_note.pitches[0].pitch, set.pitch, set.text_pitch);
+        deepEqual(transposed_note.pitches[0].accidental, set.accidental, set.text_acc);
+    });
 });
 
 test('Minor', function() {
 
-    deepEqual(transpose_note(create_note(), teoria.interval('m2')).pitches[0].pitch, 1, 'Transpose a C note a minor second up results in D note');
-    deepEqual(transpose_note(create_note(), teoria.interval('m2')).pitches[0].accidental, "flat", 'Transpose a C note a minor second up results in b accidental');
+    var note = create_note();
+    var clef = create_clef("treble");
 
-    deepEqual(transpose_note(create_note(), teoria.interval('m3')).pitches[0].pitch, 2, 'Transpose a C note a minor third up results in E note');
-    deepEqual(transpose_note(create_note(), teoria.interval('m3')).pitches[0].accidental, "flat", 'Transpose a C note a minor third up results in no accidental');
+    var current_key_signature = create_key_signature("CM");
 
-    deepEqual(transpose_note(create_note(), teoria.interval('m6')).pitches[0].pitch, 5, 'Transpose a C note a minor sixth up results in E note');
-    deepEqual(transpose_note(create_note(), teoria.interval('m6')).pitches[0].accidental, "flat", 'Transpose a C note a minor sixth up results in no accidental');
+    var test_set = [{
+        interval: 'm2',
+        pitch: 1,
+        accidental: 'flat',
+        text_pitch: 'Transpose a C note a minor second up results in D note',
+        text_acc: 'Transpose a C note a minor second up results in a b accidental'
+    }, {
+        interval: 'm3',
+        pitch: 2,
+        accidental: 'flat',
+        text_pitch: 'Transpose a C note a minor third up results in E note',
+        text_acc: 'Transpose a C note a minor third up results in a b accidental'
+    }, {
+        interval: 'm6',
+        pitch: 5,
+        accidental: 'flat',
+        text_pitch: 'Transpose a C note a minor sixth up results in G note',
+        text_acc: 'Transpose a C note a minor sixth up results in a b accidental'
+    }, {
+        interval: 'm7',
+        pitch: 6,
+        accidental: 'flat',
+        text_pitch: 'Transpose a C note a minor seventh up results in C note',
+        text_acc: 'Transpose a C note a minor seventh up results in a b accidental'
+    }];
 
-    deepEqual(transpose_note(create_note(), teoria.interval('m7')).pitches[0].pitch, 6, 'Transpose a C note a minor seventh up results in E note');
-    deepEqual(transpose_note(create_note(), teoria.interval('m7')).pitches[0].accidental, "flat", 'Transpose a C note a minor seventh up results in no accidental');
+    test_set.forEach(function(set) {
+
+        var intv = teoria.interval(set.interval);
+        var transposed_key_signature = transpose_key("C", clef, intv);
+        var transposed_note = transpose_note(note, intv, current_key_signature, transposed_key_signature);
+
+        deepEqual(transposed_note.pitches[0].pitch, set.pitch, set.text_pitch);
+        deepEqual(transposed_note.pitches[0].accidental, set.accidental, set.text_acc);
+    });
 });
 
 test('Augmented', function() {
