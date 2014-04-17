@@ -157,6 +157,7 @@ module.exports = function(grunt) {
             },
         },
 
+
     });
 
     // Load the plugin that provides the "jshint" task.
@@ -171,8 +172,41 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-svgmin');
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
 
+    // Custom tasks
+    grunt.registerTask('unusedimages', function() {
+        var assets = [],
+            links = [];
+
+        // Get list of images
+        grunt.file.expand({
+            filter: 'isFile',
+            cwd: 'build/images/' // Change this to your images dir
+        }, ['**/*']).forEach(function(file) {
+            assets.push(file);
+        });
+
+        // Find images in content
+        grunt.file.expand({
+            filter: 'isFile',
+        }, ['build/*.html', 'build/css/**/*.css']).forEach(function(file) { // Change this to narrow down the search
+            var content = grunt.file.read(file);
+            assets.forEach(function(asset) {
+                if (content.search(asset) !== -1) {
+                    links.push(asset);
+                }
+            });
+        });
+
+        // Output unused images
+        var unused = grunt.util._.difference(assets, links);
+        console.log('Found ' + unused.length + ' unused images:');
+        unused.forEach(function(el) {
+            console.log(el);
+        });
+    });
+
     // Default task(s).
-    grunt.registerTask('test', ['jshint', 'qunit']);
+    grunt.registerTask('test', ['unusedimages', 'jshint', 'qunit']);
     grunt.registerTask('export', ['natural_docs', 'clean:build', 'copy']);
     grunt.registerTask('scripts', ['uglify', 'clean:scripts']);
     grunt.registerTask('stylesheets', ['cssmin', 'clean:stylesheets']);
