@@ -9,17 +9,17 @@ module.exports = function(grunt) {
                 trailing: true,
                 curly: true,
                 indent: 4,
-                latedef: true,
+                latedef: false,
                 undef: true,
                 unused: true,
                 maxparams: 4,
-                maxdepth: 5,
-                maxstatements: 30,
+                maxdepth: 4,
+                maxstatements: 25,
                 maxcomplexity: 8,
-                maxlen: 150,
+                maxlen: 120,
                 jquery: true,
                 browser: true,
-                predef: ["teoria", "Raphael", "ABCHeader", "ABCPrinter", "AbcTuneBook", "AbcParse", "console"]
+                predef: ["teoria", "Raphael", "ABCHeader", "ABCPrinter", "AbcTuneBook", "AbcParse", "console", "AbcParseHeader", "key_signatures", "alert"]
 
             },
             target: {

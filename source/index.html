@@ -35,7 +35,7 @@
     </div>
 
 
-    <div id="main" data-role="page" >
+    <div id="main" data-role="page">
 
         <div class="red-jackets-title-bar" data-role="header" data-theme="b">
 
@@ -48,69 +48,74 @@
             <img class="title-svg" id="title-main" alt="image" src="images/logo.min.svg" vspace="2" />
 
             <div style='float: right; text-align: right'>
-                <a href="transpose_wheel.html" data-rel="pop-up">
-                    <img class="transpose-button-svg" alt="image" src="images/icon_transpose.min.svg" vspace="2" />
-                </a>
-
                 <a href="#layout_panel">
                     <img class="layout-button-svg" alt="image" src="images/icon_layout.min.svg" vspace="2" />
                 </a>
             </div>
         </div>
-        <div data-role="content" class="red-jackets-content" >
+        <div data-role="content" class="red-jackets-content">
             <div id="chords" align=center></div>
             <div class="red-jackets-notation" id="notation" align=center></div>
             <div role="main" class="ui-content"></div>
         </div>
 
         <div data-role="panel" data-position="left" data-display="push" data-theme="b" id="song_panel">
-            <ul data-role="listview" id="song_menu" data-autodividers="true" data-filter="true" data-filter-placeholder="Search song..."></ul>
+            <ul data-role="listview" id="main_menu">
+                <li></li>
+                <li>
+                    <a href="transpose_wheel.html" data-rel="pop-up" data-rel="close">
+                        <img src="images/icon_transpose.min.svg" class="menu-instrument-svg" />Transpose song
+                    </a>
+                </li>
+                <li>
+                    <h3>Choose the layout</h3>
+
+                    <ul data-role="listview" id="choose_view_menu">
+                        <li>
+                            <a id="leadsheet" data-rel="close" href="#">
+                                <img src="images/icon_band.min.svg" class="menu-instrument-svg" />
+                                <h2>Leadsheet</h2>
+                            </a>
+                        </li>
+                        <li>
+                            <a id="trumpet" data-rel="close" href="#">
+                                <img src="images/icon_trumpet.min.svg" class="menu-instrument-svg" />
+                                <h2>Trumpet</h2>
+                            </a>
+                        </li>
+                        <li>
+                            <a id="trombone" data-rel="close" href="#">
+                                <img src="images/icon_trombone.min.svg" class="menu-instrument-svg" />
+                                <h2>Trombone</h2>
+                            </a>
+                        </li>
+                        <li>
+                            <a id="clarinet" data-rel="close" href="#">
+                                <img src="images/icon_clarinet.min.svg" class="menu-instrument-svg" />
+                                <h2>Clarinet</h2>
+                            </a>
+                        </li>
+                        <li>
+                            <a id="saxophone" data-rel="close" href="#">
+                                <img src="images/icon_saxophone.min.svg" class="menu-instrument-svg" />
+                                <h2>Saxophone</h2>
+                            </a>
+                        </li>
+                        <li>
+                            <a id="sous" data-rel="close" href="#">
+                                <img src="images/icon_sous.min.svg" class="menu-instrument-svg" />
+                                <h2>Sousaphone</h2>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
 
         <div data-role="panel" data-position="right" data-display="push" data-theme="b" id="layout_panel">
-            <h3>Choose the layout</h3>
-
-            <ul data-role="listview" id="choose_view_menu">
-                <li>
-                    <a id="leadsheet" data-rel="close" href="#">
-                        <img src="images/icon_band.min.svg" class="menu-instrument-svg"/>
-                        <h2>Leadsheet</h2>
-                    </a>
-                </li>
-                <li>
-                    <a id="trumpet" data-rel="close" href="#">
-                        <img src="images/icon_trumpet.min.svg" class="menu-instrument-svg"/>
-                        <h2>Trumpet</h2>
-                    </a>
-                </li>
-                <li>
-                    <a id="trombone" data-rel="close" href="#">
-                        <img src="images/icon_trombone.min.svg" class="menu-instrument-svg"/>
-                        <h2>Trombone</h2>
-                    </a>
-                </li>
-                <li>
-                    <a id="clarinet" data-rel="close" href="#">
-                        <img src="images/icon_clarinet.min.svg" class="menu-instrument-svg"/>
-                        <h2>Clarinet</h2>
-                    </a>
-                </li>
-                <li>
-                    <a id="saxophone" data-rel="close" href="#">
-                        <img src="images/icon_saxophone.min.svg" class="menu-instrument-svg" />
-                        <h2>Saxophone</h2>
-                    </a>
-                </li>
-                <li>
-                    <a id="sous" data-rel="close" href="#">
-                        <img src="images/icon_sous.min.svg" class="menu-instrument-svg" />
-                        <h2>Sousaphone</h2>
-                    </a>
-                </li>
-            </ul>
-
+            <ul data-role="listview" id="song_menu" data-autodividers="true" data-filter="true" data-filter-placeholder="Search song..."></ul>
         </div>
-    </div>
+
 </body>
 
 </html>

@@ -186,6 +186,114 @@ function parse_key_signature(key_signature) {
 }
 
 /*
+ 
+ */
+
+function add_accidental_to_string(str_note, abc_note) {
+
+    var accidentals = {
+        "sharp": "#",
+        "dblsharp": "x",
+        "natural": "",
+        "flat": "b",
+        "dblflat": "bb"
+    };
+
+    var teoria_root_note_accidental = "";
+
+    var abc_root_note_accidental = abc_note.pitches[0].accidental;
+
+    if (abc_root_note_accidental) {
+        teoria_root_note_accidental = accidentals[abc_root_note_accidental];
+    }
+
+    //Insert accidental into string after note name and return
+    return str_note.substring(0, 1) + teoria_root_note_accidental + str_note.substring(1, str_note.length);
+}
+
+function abc_note_to_teoria_note(abc_note) {
+
+    var pitches = {
+        0: "C",
+        1: "D",
+        2: "E",
+        3: "F",
+        4: "G",
+        5: "A",
+        6: "B",
+        7: "c",
+        8: "d",
+        9: "e",
+        10: "f",
+        11: "g",
+        12: "a",
+        13: "b"
+    };
+
+    var abc_root_note = abc_note.pitches[0].pitch;
+    var pitch_idx = abc_root_note % 14;
+
+    while (pitch_idx < 0) {
+        pitch_idx += 7;
+    }
+
+    var string_root_note = pitches[pitch_idx];
+
+    /*console.log(string_root_note);*/
+
+    // It could be negative
+    /*   if (abc_root_note < 0) {
+
+        var octave = abc_root_note / 7;
+
+        for (var i = 0; i < octave; i++)
+            string_root_note += ",";
+    }
+
+    if (abc_root_note > 13) {
+
+        var octave = abc_root_note / 7 - 1;
+
+        for (var i = 0; i < octave; i++)
+            string_root_note += "'";
+    }*/
+
+    string_root_note = add_accidental_to_string(string_root_note, abc_note);
+
+
+    // Not needed now
+    //var teoria_duration = abc_duration_to_teoria_duration(abc_note.abc_duration);
+
+    return new teoria.note(string_root_note, 1.0);
+}
+
+function abc_duration_to_teoria_duration(abc_duration) { // jshint ignore:line
+
+    var inv_duration = 1.0 / abc_duration;
+
+    var undotted_power = Math.ceil(Math.log(inv_duration) / Math.log(2));
+    var undotted_duration = Math.pow(2, undotted_power);
+
+    var remaining_duration = abc_duration - 1.0 / undotted_duration;
+
+    var dots = 0;
+    var half = 1.0 / undotted_duration;
+
+    while (remaining_duration > 0.0) {
+        half = half / 2;
+
+        dots += 1;
+        remaining_duration -= half;
+    }
+
+    return {
+        "value": undotted_duration,
+        "dots": dots
+    };
+}
+
+
+/*
    Function: teoria_chord_name_to_abc_chord_name
    Teoria chords have slightly different formatting
 
@@ -197,7 +305,6 @@ function parse_key_signature(key_signature) {
 
        abc_chord - renames the string to abc chord syntax
 */
-
 function teoria_chord_name_to_abc_chord_name(teoria_chord_name) {
 
     return teoria_chord_name.replace("M", "");
@@ -215,6 +322,21 @@ function update_current_key() {
     key = teoria_chord_name_to_abc_chord_name(key);
 
     $('#transpose_menu option[value=' + key + ']').attr('selected', true);
+}
+
+/*
+  Function: redraw_everything
+  Redraw everything on the screen
+*/
+
+function redraw_everything() {
+    reset_render_stuff();
+
+    if (current_song !== null) {
+        render_song(current_song);
+        var chord_scheme = parse_chord_scheme();
+        render_chords(chord_scheme);
+    }
 }
 
 /*
@@ -251,8 +373,7 @@ function parse_string_to_abc_tune(text) {
     - header_only:     only parse the header
     - stop_on_warning: only parse until the first warning is encountered
 */
-
-function init_parsing_stuff() {
+function init_parsing_stuff() { // jshint ignore:line
 
     var parserParams = {
         print: false,
@@ -285,9 +406,9 @@ function parse_song(path) {
 
    Returns:
        width - Screen width of the device
-*/
 
-function get_width() {
+*/
+function get_width() { // jshint ignore:line
     var ori = $(window).orientation;
     var width = (ori === 90 || ori === -90) ? $(window).height() : $(window).width();
     return width;
@@ -369,6 +490,57 @@ function parse_chord_scheme() {
 }
 
 /*
+   Funcion: teoria_note_to_abc_note
+   Converts an teoria note into the abc intermediate format
+
+   Parameters:
+
+       teoria_note - A teoria note
+
+   Returns:
+
+       abc_note - An abc note in the intermediate format
+*/
+
+function teoria_note_to_abc_note(teoria_note) {
+
+    var teoria_to_abc_pitches = "cdefgab";
+
+    var pitch = teoria_to_abc_pitches.indexOf(teoria_note.name());
+
+    var center_octave = 2;
+    var notes_per_octave = 7;
+    pitch += notes_per_octave * (teoria_note.octave() - center_octave);
+
+    var accidental = "";
+    switch (teoria_note.accidental()) {
+        case "x":
+            accidental = "dblsharp";
+            break;
+        case "#":
+            accidental = "sharp";
+            break;
+        case "b":
+            accidental = "flat";
+            break;
+        case "bb":
+            accidental = "dblflat";
+            break;
+        default:
+            accidental = "";
+            break;
+    }
+
+    return {
+        pitches: [{
+            "pitch": pitch,
+            "verticalPos": pitch,
+            "accidental": accidental
+        }]
+    };
+}
+
+/*
    Funcion: key_signature_from_teoria_key
    Returns all accidentals that come with a key
 
@@ -384,10 +556,15 @@ function parse_chord_scheme() {
 
 function key_signature_from_teoria_key(key, clef) {
 
-    parse_header = new AbcParseHeader(undefined, undefined, undefined, undefined);
+    var parse_header = new AbcParseHeader(undefined, undefined, undefined, undefined);
 
     var abc_key_name = teoria_chord_name_to_abc_chord_name(key);
     var acc = key_signatures[abc_key_name];
+
+    if (acc === undefined) {
+        acc = [];
+        console.log("No accidentals for " + abc_key_name);
+    }
 
     var key_sig = {
         accidentals: acc
@@ -435,7 +612,7 @@ function remove_acc_from_key_signature(abc_note, key) {
 
     for (var i = 0; i < key.accidentals.length; i++) {
 
-        if (abc_root_note.pitch % 8 === key.accidentals[i].verticalPos % 8) {
+        if ((abc_root_note.pitch % 8) === (key.accidentals[i].verticalPos % 8)) {
 
             switch (abc_root_note.accidental) {
 
@@ -450,6 +627,27 @@ function remove_acc_from_key_signature(abc_note, key) {
     }
 }
 
+/*
+   Funcion: transpose_chord
+   Transposes a chord with the interval
+
+   Parameters:
+
+       abc_chord - The chord to transpose
+       teoria_interval - The interval which is used to transpose the chord
+
+   Returns:
+
+       chord - Transposed chord
+*/
+
+function transpose_chord(abc_chord, teoria_interval) {
+
+    var chord = teoria.chord(abc_chord);
+    chord.transpose(teoria_interval.toString());
+
+    return chord.name;
+}
 
 /*
    Funcion: transpose_note
@@ -572,55 +770,7 @@ function transpose_song(key) {
     return false;
 }
 
-function transpose_chord(abc_chord, teoria_interval) {
-
-    var chord = teoria.chord(abc_chord);
-    chord.transpose(teoria_interval.toString());
-
-    return chord.name;
-}
-
-
-
-function teoria_note_to_abc_note(teoria_note) {
-
-    var teoria_to_abc_pitches = "cdefgab";
-
-    var pitch = teoria_to_abc_pitches.indexOf(teoria_note.name());
-
-    var center_octave = 2;
-    var notes_per_octave = 7;
-    pitch += notes_per_octave * (teoria_note.octave() - center_octave);
-
-    var accidental = "";
-    switch (teoria_note.accidental()) {
-        case "x":
-            accidental = "dblsharp";
-            break;
-        case "#":
-            accidental = "sharp";
-            break;
-        case "b":
-            accidental = "flat";
-            break;
-        case "bb":
-            accidental = "dblflat";
-            break;
-        default:
-            accidental = "";
-            break;
-    }
-
-    return {
-        pitches: [{
-            "pitch": pitch,
-            "verticalPos": pitch,
-            "accidental": accidental
-        }]
-    };
-}
-
-function teoria_duration_to_abc_duration(teoria_duration) {
+function teoria_duration_to_abc_duration(teoria_duration) { // jshint ignore:line
 
     var abc_duration = 1.0 / teoria_duration.value;
 
@@ -636,134 +786,16 @@ function teoria_duration_to_abc_duration(teoria_duration) {
     return abc_duration;
 }
 
-
-function abc_note_to_teoria_note(abc_note) {
-
-    var pitches = {
-        0: "C",
-        1: "D",
-        2: "E",
-        3: "F",
-        4: "G",
-        5: "A",
-        6: "B",
-        7: "c",
-        8: "d",
-        9: "e",
-        10: "f",
-        11: "g",
-        12: "a",
-        13: "b"
-    };
-
-    var abc_root_note = abc_note.pitches[0].pitch;
-    var pitch_idx = abc_root_note % 14;
-
-    while (pitch_idx < 0) {
-        pitch_idx += 7;
-    }
-
-    var string_root_note = pitches[pitch_idx];
-
-    console.log(string_root_note);
-
-    // It could be negative
-    /*   if (abc_root_note < 0) {
-
-        var octave = abc_root_note / 7;
-
-        for (var i = 0; i < octave; i++)
-            string_root_note += ",";
-    }
-
-    if (abc_root_note > 13) {
-
-        var octave = abc_root_note / 7 - 1;
-
-        for (var i = 0; i < octave; i++)
-            string_root_note += "'";
-    }*/
-
-    string_root_note = add_accidental_to_string(string_root_note, abc_note);
-
-
-    // Not needed now
-    //var teoria_duration = abc_duration_to_teoria_duration(abc_note.abc_duration);
-
-    return new teoria.note(string_root_note, 1.0);
-}
-
-function abc_duration_to_teoria_duration(abc_duration) {
-
-    var inv_duration = 1.0 / abc_duration;
-
-    var undotted_power = Math.ceil(Math.log(inv_duration) / Math.log(2));
-    var undotted_duration = Math.pow(2, undotted_power);
-
-    var remaining_duration = abc_duration - 1.0 / undotted_duration;
-
-    var dots = 0;
-    var half = 1.0 / undotted_duration;
-
-    while (remaining_duration > 0.0) {
-        half = half / 2;
-
-        dots += 1;
-        remaining_duration -= half;
-    }
-
-    return {
-        "value": undotted_duration,
-        "dots": dots
-    };
-}
-/*
- 
- */
-
-function add_accidental_to_string(str_note, abc_note) {
-
-    var accidentals = {
-        "sharp": "#",
-        "dblsharp": "x",
-        "natural": "",
-        "flat": "b",
-        "dblflat": "bb"
-    };
-
-    var teoria_root_note_accidental = "";
-
-    var abc_root_note_accidental = abc_note.pitches[0].accidental;
-
-    if (abc_root_note_accidental) {
-        teoria_root_note_accidental = accidentals[abc_root_note_accidental];
-    }
-
-    //Insert accidental into string after note name and return
-    return str_note.substring(0, 1) + teoria_root_note_accidental + str_note.substring(1, str_note.length);
-}
-
-function create_nav_bars() {
+function create_nav_bars() { //jshint ignore:line
     $("#navbar").navbar();
 }
 
-function load_songs() {
+function load_songs() { // jshint ignore:line
     $.get('songs/_index_of_songs.txt', parse_song_list, 'text');
 }
 
-function subscribe_to_events() {
 
-    // Event handler when different song is selected
-    $('#song_menu').on('click', 'li', song_listview_event_handler);
-    $('#transpose_menu').on('click', 'li', transpose_listview_event_handler);
-
-    // Event handler window resize event
-    $(window).bind('resize', function(e) {
-        redraw_everything();
-    });
-}
-
-function song_listview_event_handler(event) {
+function song_listview_event_handler(event) { // jshint ignore:line
 
     var song_path = this.getAttribute('data-path');
 
@@ -775,11 +807,24 @@ function song_listview_event_handler(event) {
     $.mobile.loading('hide');
 }
 
-function transpose_listview_event_handler(event) {
+function transpose_listview_event_handler(event) { // jshint ignore:line
 
     var key = this.getAttribute('data-key');
     transpose_and_redraw(key);
 }
+
+function subscribe_to_events() { // jshint ignore:line
+
+    // Event handler when different song is selected
+    $('#song_menu').on('click', 'li', song_listview_event_handler);
+    $('#transpose_menu').on('click', 'li', transpose_listview_event_handler);
+
+    // Event handler window resize event
+    $(window).bind('resize', function(e) { // jshint ignore:line
+        redraw_everything();
+    });
+}
+
 
 function transpose_and_redraw(key) {
 
@@ -799,7 +844,8 @@ function transpose_and_redraw(key) {
     }
 }
 
-function selectCurrentChord(svgShapeId) {
+
+function selectCurrentChord(svgShapeId) { // jshint ignore:line
 
     var partThatWasClicked = document.getElementById(svgShapeId);
 
@@ -807,7 +853,7 @@ function selectCurrentChord(svgShapeId) {
     partThatWasClicked.setAttribute('stroke', 'black');
 }
 
-function scaleElementToPage(element) {
+function scaleElementToPage(element) { // jshint ignore:line
 
     var el = document.getElementById(element);
 
@@ -820,18 +866,8 @@ function scaleElementToPage(element) {
     el.setAttribute('transform', 'scale(' + scale + ')');
 }
 
-function redraw_everything() {
-    reset_render_stuff();
-
-    if (current_song !== null) {
-        render_song(current_song);
-        var chord_scheme = parse_chord_scheme();
-        render_chords(chord_scheme);
-    }
-}
-
-function init() {
-    create_nav_bars();
+function init() { // jshint ignore:line
+    /*create_nav_bars();*/
     subscribe_to_events();
     load_songs();
 

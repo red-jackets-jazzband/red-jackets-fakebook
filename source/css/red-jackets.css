@@ -42,6 +42,7 @@
      text-align:center;
      vertical-align:middle;
      min-height: 40px;
+     min-width: 100%;
  }
  .red-jackets-notation {
      text-align:center;
@@ -117,24 +118,21 @@
      vertical-align: middle;
      overflow: hidden;
  }
-
-.transpose_wheel_letters {
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-.minor-chord-letter {
-    font-family: "josefin_slabregular";
-    font-weight: 800;
-    font-size: 40px;
-
-    fill: "#0000ff";
-}
-.major-chord-letter {
-    font-family: "josefin_slabregular";
-    font-weight: 800;
-    font-size: 60px;
-
-    fill: "#0000ff";
-}
+ .transpose_wheel_letters {
+     display: inline-block;
+     position: absolute;
+     top: 0;
+     left: 0;
+ }
+ .minor-chord-letter {
+     font-family:"josefin_slabregular";
+     font-weight: 800;
+     font-size: 40px;
+     fill:"#0000ff";
+ }
+ .major-chord-letter {
+     font-family:"josefin_slabregular";
+     font-weight: 800;
+     font-size: 60px;
+     fill:"#0000ff";
+ }
