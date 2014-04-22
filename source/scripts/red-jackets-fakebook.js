@@ -185,7 +185,7 @@ var RJ_parse = (function() {
             var song_name = songs[i].split(",")[0];
             var song_path = songs_folder + '/' + songs[i].split(",")[1];
 
-            $("#song_menu").append("<li data-path=" + song_path + " data-rel='close '>" + song_name + " </li>");
+            $("#song_menu").append("<li data-path=" + song_path + " data-rel='close'>" + song_name + " </li>");
         }
     };
 
@@ -325,7 +325,7 @@ var RJ_parse = (function() {
 
                 var element = line[line_idx];
 
-                if (element.el_type === "bar ") {
+                if (element.el_type === "bar") {
 
                     if (did_not_parse_chord_in_this_measure && parsed_first_bar) {
                         current_measure.push(" % ");
@@ -404,22 +404,7 @@ var RJ_teoria_abc_glue = (function() {
 
     _functions.abc_note_to_teoria_note = function(abc_note) {
 
-        var pitches = {
-            0: "C",
-            1: "D",
-            2: "E",
-            3: "F",
-            4: "G",
-            5: "A",
-            6: "B",
-            7: "c",
-            8: "d",
-            9: "e",
-            10: "f",
-            11: "g",
-            12: "a",
-            13: "b"
-        };
+        var pitches = "CDEFGABcdefgab";
 
         var abc_root_note = abc_note.pitches[0].pitch;
         var pitch_idx = abc_root_note % 14;
@@ -428,9 +413,7 @@ var RJ_teoria_abc_glue = (function() {
             pitch_idx += 7;
         }
 
-        var string_root_note = pitches[pitch_idx];
-
-        /*console.log(string_root_note);*/
+        var string_root_note = pitches.charAt(pitch_idx);
 
         // It could be negative
         /*   if (abc_root_note < 0) {
@@ -813,7 +796,8 @@ var RJ_transpose = (function() {
             current_song.lines[i].staff[0].key = transposed_key_signature;
         }
 
-        var chord_scheme = RJ_parse.chord_scheme();
+        var chord_scheme = _functions.chord_scheme();
+        console.log("About to render " + chord_scheme);
         RJ_render.chords(chord_scheme);
 
         update_current_key();

@@ -1,3 +1,11 @@
+.ui-btn, body, button, input, select, textarea {
+     font-family:"josefin_slabregular";
+     font-weight : 600;
+}
+.ui-li-static{
+     min-height: 1em;
+}
+
  .red-jackets-logo {
      color:rgba(255, 189, 0, 1);
      text-shadow:0 -1px 1px rgba(255, 0, 0, 1);
@@ -86,6 +94,8 @@
      vertical-align: middle;
  }
  .transpose-button-svg {
+     height: 80px;
+     width: 80px;
      max-height:100%;
      max-width: 100%;
      vertical-align: middle;
@@ -106,8 +116,10 @@
      vertical-align: middle;
  }
  .menu-instrument-svg {
-     max-height:30px;
-     max-width: 30px;
+     height: 20px;
+     width: 20px;
+     max-height:100%;
+     max-width: 100%;
      vertical-align: middle;
  }
  .svg-container {

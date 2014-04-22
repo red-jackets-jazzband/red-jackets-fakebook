@@ -38,7 +38,7 @@
         <div class="red-jackets-title-bar" data-role="header" data-theme="b">
 
             <div style='float: left; text-align: left'>
-                <a href="#song_panel">
+                <a href="#layout_panel">
                     <img class="menu-button-svg" alt="image" src="images/icon_menu.min.svg" vspace="2" />
                 </a>
             </div>
@@ -46,7 +46,7 @@
             <img class="title-svg" id="title-main" alt="image" src="images/logo.min.svg" vspace="2" />
 
             <div style='float: right; text-align: right'>
-                <a href="#layout_panel">
+                <a href="#song_panel">
                     <img class="layout-button-svg" alt="image" src="images/icon_layout.min.svg" vspace="2" />
                 </a>
             </div>
@@ -57,12 +57,12 @@
             <div role="main" class="ui-content"></div>
         </div>
 
-        <div data-role="panel" data-position="left" data-display="push" data-theme="b" id="song_panel">
+        <div data-role="panel" data-position="left" data-display="push" data-theme="b" id="layout_panel">
             <ul data-role="listview" id="main_menu">
                 <li></li>
                 <li>
                     <a href="transpose_wheel.html" data-rel="pop-up" data-rel="close">
-                        <img src="images/icon_transpose.min.svg" class="menu-instrument-svg" />Transpose song
+                        <img src="images/icon_transpose.min.svg" class="transpose-button-svg" />Transpose
                     </a>
                 </li>
                 <li>
@@ -110,7 +110,7 @@
             </ul>
         </div>
 
-        <div data-role="panel" data-position="right" data-display="push" data-theme="b" id="layout_panel">
+        <div data-role="panel" data-position="right" data-display="push" data-theme="b" id="song_panel">
             <ul data-role="listview" id="song_menu" data-autodividers="true" data-filter="true" data-filter-placeholder="Search song..."></ul>
         </div>
 
