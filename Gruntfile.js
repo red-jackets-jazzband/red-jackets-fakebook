@@ -51,13 +51,19 @@ module.exports = function(grunt) {
                 dest: 'build',
                 expand: true
             },
+            fonts: {
+                cwd: 'build/css/fonts',
+                src: ['**'],
+                dest: 'build/css',
+                expand: true,
+            }
         },
         clean: {
             build: {
                 src: ['build']
             },
             stylesheets: {
-                src: ['build/css/*.css', 'build/css/fonts/*.css', '!build/red-jackets-fakebook.css']
+                src: ['build/css/*.css', 'build/css/fonts/*.css', '!build/css/red-jackets-fakebook.css']
             },
             scripts: {
                 src: ['build/scripts/*.js', 'build/scripts/', '!build/red-jackets-fakebook.js']
@@ -86,7 +92,7 @@ module.exports = function(grunt) {
         cssmin: {
             build: {
                 files: {
-                    'build/red-jackets-fakebook.css': ['build/css/*.css', 'build/css/fonts/*.css']
+                    'build/css/red-jackets-fakebook.css': ['build/css/*.css', 'build/css/fonts/*.css']
                 }
             }
         },
@@ -156,8 +162,16 @@ module.exports = function(grunt) {
                 }
             },
         },
-
-
+        strip_code: {
+            options: {
+                start_comment: "test-code",
+                end_comment: "end-test-code",
+            },
+            remove_test_code: {
+                // a list of files you want to strip code from
+                src: "build/*.js"
+            }
+        },
     });
 
     // Load the plugin that provides the "jshint" task.
@@ -171,6 +185,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-svgmin');
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
+    grunt.loadNpmTasks('grunt-strip-code');
 
     // Custom tasks
     grunt.registerTask('unusedimages', function() {
@@ -207,9 +222,9 @@ module.exports = function(grunt) {
 
     // Default task(s).
     grunt.registerTask('test', ['unusedimages', 'jshint', 'qunit']);
-    grunt.registerTask('export', ['natural_docs', 'clean:build', 'copy']);
-    grunt.registerTask('scripts', ['uglify', 'clean:scripts']);
-    grunt.registerTask('stylesheets', ['cssmin', 'clean:stylesheets']);
+    grunt.registerTask('export', ['natural_docs', 'clean:build', 'copy:build']);
+    grunt.registerTask('scripts', ['strip_code', 'uglify', 'clean:scripts']);
+    grunt.registerTask('stylesheets', ['cssmin', 'clean:stylesheets', 'copy:fonts']);
     grunt.registerTask('svgs', ['svgmin', 'clean:svgs']);
     grunt.registerTask('html', ['clean:html', 'htmlmin']);
 
