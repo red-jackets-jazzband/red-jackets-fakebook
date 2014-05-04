@@ -2,7 +2,7 @@
     <widget xmlns   = "http://www.w3.org/ns/widgets"
         xmlns:gap   = "http://phonegap.com/ns/1.0"
         id          = "com.redjackets.fakebook"
-        versionCode = "10"
+        versionCode = "11"
         version     = "0.0.1" >
 
     <!-- versionCode is optional and Android only -->
@@ -22,6 +22,6 @@
     <gap:splash src="images/splash-800x480.png" width="480" height="800" />
     <!--<gap:splash src="images/splash-1600x960.png" width="960" height="1600" />-->
     <preference name="android-targetSdkVersion" value="14" />
-
+    <preference name="permissions" value="none"/>
 
 </widget>

@@ -6,7 +6,10 @@ var notation_config = {
         key: 'C',
     },
     'instrument': {
-        clef: 'treble',
+        clef: {
+            type: 'treble',
+            verticalPos: 0
+        },
         key: 'C',
     },
 };
@@ -273,8 +276,8 @@ var RJ_parse = (function() {
 
         var base_instrument_key = 'C';
 
-        var interval = teoria.interval.between(teoria.note(base_instrument_key),
-            teoria.note(notation_config.instrument.key));
+        var interval = teoria.interval.between(teoria.note(notation_config.instrument.key),
+            teoria.note(base_instrument_key));
 
         RJ_transpose.song(interval);
 
@@ -392,11 +395,13 @@ var RJ_teoria_abc_glue = (function() {
     var _private = {};
 
 
+    var center_octave = 2;
+    var notes_per_octave = 7;
     /*
      
      */
 
-    _functions.add_accidental_to_string = function(str_note, abc_note) {
+    _functions.get_teoria_note_accidental = function(abc_note) {
 
         var accidentals = {
             "sharp": "#",
@@ -415,42 +420,56 @@ var RJ_teoria_abc_glue = (function() {
         }
 
         //Insert accidental into string after note name and return
-        return str_note.substring(0, 1) + teoria_root_note_accidental + str_note.substring(1, str_note.length);
+        return teoria_root_note_accidental;
+    };
+    /*
+     
+     */
+
+    _functions.add_accidental_to_string = function(str_note, abc_note) {
+
+        // Insert accidental into string after note name and return
+        var val = str_note.substring(0, 1);
+        val += _functions.get_teoria_note_accidental(abc_note);
+        val += str_note.substring(1, str_note.length);
+
+        return val;
     };
 
+    /*
+    Function: abc_note_to_teoria_note
+    Convert abc_note to teoria_note
+
+    Parameters:
+
+      abc_note note in abc intermediate format
+
+    Returns:
+
+       teoria_note - representing the same note as the abc_note
+    */
     _functions.abc_note_to_teoria_note = function(abc_note) {
 
-        var pitches = "CDEFGABcdefgab";
+        var pitches = "CDEFGAB";
 
         var abc_root_note = abc_note.pitches[0].pitch;
-        var pitch_idx = abc_root_note % 14;
+
+        /* Get it range to calculate letter */
+        var pitch_idx = abc_root_note % notes_per_octave;
 
         while (pitch_idx < 0) {
-            pitch_idx += 7;
+            pitch_idx += notes_per_octave;
         }
 
+        /* Get the letter*/
         var string_root_note = pitches.charAt(pitch_idx);
 
-        // It could be negative
-        /*   if (abc_root_note < 0) {
+        /* Get the accidental */
+        string_root_note += _functions.get_teoria_note_accidental(abc_note);
 
-        var octave = abc_root_note / 7;
-
-        for (var i = 0; i < octave; i++)
-            string_root_note += ",";
-    }
-
-    if (abc_root_note > 13) {
-
-        var octave = abc_root_note / 7 - 1;
-
-        for (var i = 0; i < octave; i++)
-            string_root_note += "'
-        ";
-    }*/
-
-        string_root_note = _functions.add_accidental_to_string(string_root_note, abc_note);
-
+        /*Get the octave number*/
+        var octave = Math.floor((abc_root_note / notes_per_octave) + center_octave);
+        string_root_note += octave;
 
         // Not needed now
         //var teoria_duration = abc_duration_to_teoria_duration(abc_note.abc_duration);
@@ -500,17 +519,17 @@ var RJ_teoria_abc_glue = (function() {
         return abc_duration;
     };
     /*
-   Function: teoria_chord_name_to_abc_chord_name
-   Teoria chords have slightly different formatting
+    Function: teoria_chord_name_to_abc_chord_name
+    Teoria chords have slightly different formatting
 
-   Parmeters:
+    Parmeters:
 
       teoria_chord_name - A string representing a chord following teoria syntax
 
     Returns:
 
        abc_chord - renames the string to abc chord syntax
-*/
+    */
     _functions.teoria_chord_name_to_abc_chord_name = function(teoria_chord_name) {
 
         return teoria_chord_name.replace("M", "");
@@ -537,8 +556,6 @@ var RJ_teoria_abc_glue = (function() {
 
         var pitch = teoria_to_abc_pitches.indexOf(teoria_note.name());
 
-        var center_octave = 2;
-        var notes_per_octave = 7;
         pitch += notes_per_octave * (teoria_note.octave() - center_octave);
 
         var accidental = "";
@@ -898,6 +915,12 @@ function transpose_listview_event_handler(event) { // jshint ignore:line
     transpose_and_redraw(key);
 }
 
+function octavate_listview_event_handler(event) { // jshint ignore:line
+
+    var octaves = this.getAttribute('data-octaves');
+    octavate_and_redraw(octaves);
+}
+
 function instrument_select_event_handler(event) { // jshint ignore:line
 
     var key = this.getAttribute('data-key');
@@ -931,12 +954,53 @@ function subscribe_to_events() { // jshint ignore:line
     // Event handler when different song is selected
     $('#song_menu').on('click', 'li', song_listview_event_handler);
     $('#transpose_menu').on('click', 'li', transpose_listview_event_handler);
+    $('#octavate_menu').on('click', 'li', octavate_listview_event_handler);
     $('#choose_view_menu').on('click', 'li', instrument_select_event_handler);
 
     // Event handler window resize event
     $(window).bind('resize', function(e) { // jshint ignore:line
         redraw_everything();
     });
+}
+
+function octavate_and_redraw(number_of_octaves) {
+
+    $.mobile.changePage($("#main"));
+
+    var interval = null;
+
+    switch (number_of_octaves) {
+        case "-2":
+            interval = teoria.interval("P16").direction("down");
+            break;
+        case "-1":
+            interval = teoria.interval("P8").direction("down");
+            break;
+        default:
+        case "0":
+            interval = teoria.interval("P1");
+            break;
+        case "1":
+            interval = teoria.interval("P8");
+            break;
+        case "2":
+            interval = teoria.interval("P16");
+            break;
+    }
+
+    if (current_song !== null) {
+        $.mobile.loading('show', {
+            theme: "b",
+            text: "Octavating song " + number_of_octaves + " octaves"
+        });
+
+        RJ_transpose.song(interval);
+        redraw_everything();
+        $.mobile.loading('hide');
+    } else {
+        alert("Choose a song first!");
+        $("#song_panel").panel("open");
+    }
 }
 
 function transpose_and_redraw(key) {

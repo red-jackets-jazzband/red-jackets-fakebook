@@ -252,7 +252,8 @@ module.exports = function(grunt) {
     grunt.registerTask('stylesheets', ['cssmin', 'clean:stylesheets', 'copy:fonts']);
     grunt.registerTask('svgs', ['svgmin', 'clean:svgs']);
     grunt.registerTask('html', ['clean:html', 'htmlmin']);
+    grunt.registerTask('zip', ['clean:zip', 'compress'])
 
-    grunt.registerTask('default', ['test', 'export', 'scripts', 'stylesheets', 'svgs', 'images', 'html', 'clean:zip', 'compress']);
+    grunt.registerTask('default', ['test', 'export', 'scripts', 'stylesheets', 'svgs', 'images', 'html', 'zip']);
 
 };
