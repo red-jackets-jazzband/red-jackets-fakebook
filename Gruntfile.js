@@ -172,6 +172,29 @@ module.exports = function(grunt) {
                 src: "build/*.js"
             }
         },
+        responsive_images: {
+            splash: {
+                options: {
+                    engine: 'im',
+                    sizes: [{
+                        height: 240,
+                        width: 400,
+                    }, {
+                        height: 480,
+                        width: 800,
+                    }, {
+                        height: 960,
+                        width: 1600,
+                    }]
+                },
+                files: [{
+                    expand: true,
+                    src: ['images/splash.png'],
+                    cwd: 'build/',
+                    dest: 'build/',
+                }]
+            }
+        },
     });
 
     // Load the plugin that provides the "jshint" task.
@@ -186,6 +209,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-svgmin');
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
     grunt.loadNpmTasks('grunt-strip-code');
+    grunt.loadNpmTasks('grunt-responsive-images');
 
     // Custom tasks
     grunt.registerTask('unusedimages', function() {
@@ -221,6 +245,7 @@ module.exports = function(grunt) {
     });
 
     // Default task(s).
+    grunt.registerTask('images', ['responsive_images']);
     grunt.registerTask('test', ['unusedimages', 'jshint', 'qunit']);
     grunt.registerTask('export', ['natural_docs', 'clean:build', 'copy:build']);
     grunt.registerTask('scripts', ['strip_code', 'uglify', 'clean:scripts']);
@@ -228,6 +253,6 @@ module.exports = function(grunt) {
     grunt.registerTask('svgs', ['svgmin', 'clean:svgs']);
     grunt.registerTask('html', ['clean:html', 'htmlmin']);
 
-    grunt.registerTask('default', ['test', 'export', 'scripts', 'stylesheets', 'svgs', 'html', 'clean:zip', 'compress']);
+    grunt.registerTask('default', ['test', 'export', 'scripts', 'stylesheets', 'svgs', 'images', 'html', 'clean:zip', 'compress']);
 
 };

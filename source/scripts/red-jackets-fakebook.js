@@ -1,4 +1,15 @@
 var current_song = null;
+var current_song_path = null;
+
+var notation_config = {
+    'song': {
+        key: 'C',
+    },
+    'instrument': {
+        clef: 'treble',
+        key: 'C',
+    },
+};
 
 var RJ_render = (function() {
 
@@ -163,6 +174,19 @@ var RJ_parse = (function() {
         stop_on_warning: false
     };
 
+    /*
+    Function: init_parsing_stuff
+
+    Creates the AbcParse object with parser params
+
+    - print:           pay attention to margins and other formatting commands that don't make sense in a web page
+    - header_only:     only parse the header
+    - stop_on_warning: only parse until the first warning is encountered
+*/
+    _functions.init = function() { // jshint ignore:line
+
+        abcParser = new AbcParse(parserParams);
+    };
 
     /*
     Function: parse_song_list
@@ -247,23 +271,15 @@ var RJ_parse = (function() {
         abcParser.parse(tunebook.tunes[0].abc); //TODO handle multiple tunes
         current_song = abcParser.getTune();
 
+        var base_instrument_key = 'C';
+
+        var interval = teoria.interval.between(teoria.note(base_instrument_key),
+            teoria.note(notation_config.instrument.key));
+
+        RJ_transpose.song(interval);
+
         redraw_everything();
         update_current_key();
-
-    };
-
-    /*
-    Function: init_parsing_stuff
-
-    Creates the AbcParse object with parser params
-
-    - print:           pay attention to margins and other formatting commands that don't make sense in a web page
-    - header_only:     only parse the header
-    - stop_on_warning: only parse until the first warning is encountered
-*/
-    _functions.init = function() { // jshint ignore:line
-
-        abcParser = new AbcParse(parserParams);
     };
 
     /*
@@ -513,9 +529,11 @@ var RJ_teoria_abc_glue = (function() {
        abc_note - An abc note in the intermediate format
 */
 
-    _functions.teoria_note_to_abc_note = function(teoria_note) {
+    _functions.teoria_note_to_abc_note = function(teoria_note, clef) {
 
         var teoria_to_abc_pitches = "cdefgab ";
+
+        var pitch_offset = (clef === undefined) ? 0 : (clef.type === 'bass') ? -2 : 0;
 
         var pitch = teoria_to_abc_pitches.indexOf(teoria_note.name());
 
@@ -545,7 +563,7 @@ var RJ_teoria_abc_glue = (function() {
         return {
             pitches: [{
                 "pitch": pitch,
-                "verticalPos": pitch,
+                "verticalPos": pitch + pitch_offset,
                 "accidental": accidental
             }]
         };
@@ -634,7 +652,7 @@ var RJ_transpose = (function() {
 
         for (var i = 0; i < key.accidentals.length; i++) {
 
-            if ((abc_root_note.pitch % 8) === (key.accidentals[i].verticalPos % 8)) {
+            if ((abc_root_note.verticalPos % 8) === (key.accidentals[i].verticalPos % 8)) {
 
                 switch (abc_root_note.accidental) {
 
@@ -661,7 +679,7 @@ var RJ_transpose = (function() {
 
         for (var i = 0; i < key.accidentals.length; i++) {
 
-            if ((abc_root_note.pitch % 8) === (key.accidentals[i].verticalPos % 8)) {
+            if ((abc_root_note.verticalPos % 8) === (key.accidentals[i].verticalPos % 8)) {
 
                 switch (abc_root_note.accidental) {
 
@@ -696,7 +714,7 @@ var RJ_transpose = (function() {
     <add_acc_from_key_signature> <remove_acc_from_key_signature>
 */
 
-    _functions.note = function(abc_note, teoria_interval, current_key_signature, transposed_key_signature) {
+    _private.note = function(abc_note, teoria_interval, current_key_signature, transposed_key_signature) {
 
         // If there is a chord, transpose it
         if (abc_note.chord !== undefined) {
@@ -732,7 +750,7 @@ var RJ_transpose = (function() {
         return abc_note;
     };
 
-    _functions.line = function(line, teoria_interval, current_key, transposed_key) {
+    _private.line = function(line, teoria_interval, current_key, transposed_key) {
 
         var transposed_line = [];
 
@@ -762,28 +780,46 @@ var RJ_transpose = (function() {
         return _functions.key_signature_from_teoria_key(transposed_key.toString(), clef);
     };
 
-    _functions.song = function(key) {
+    _functions.song = function(key_or_teoria_interval) {
 
-        // Get current key
-        var current_key = RJ_parse.key_signature(current_song.lines[0].staff[0].key);
-        current_key = RJ_teoria_abc_glue.teoria_chord_name_to_abc_chord_name(current_key);
+        var interval = null;
 
-        console.log("Transpose from " + current_key + "to " + key);
+        switch (typeof key_or_teoria_interval) {
 
-        var interval = teoria.interval.between(teoria.note(current_key), teoria.note(key));
+            default:
+            case "string":
 
+                var key = key_or_teoria_interval;
+
+                // Get current key
+                var current_key = RJ_parse.key_signature(current_song.lines[0].staff[0].key);
+                current_key = RJ_teoria_abc_glue.teoria_chord_name_to_abc_chord_name(current_key);
+
+                console.log("Transpose from " + current_key + " to " + key);
+
+                interval = teoria.interval.between(teoria.note(current_key), teoria.note(key));
+                break;
+            case "object":
+                interval = key_or_teoria_interval;
+                break;
+        }
         _functions.all_lines(interval);
     };
 
-    _functions.all_lines = function(teoria_interval) {
+    _private.all_lines = function(teoria_interval) {
 
         for (var i = 0; i < current_song.lines.length; i++) {
 
-            var clef = current_song.lines[i].staff[0].clef;
+            console.log("Original clef " + current_song.lines[i].staff[0].clef.type +
+                " @" + current_song.lines[i].staff[0].clef.verticalPos);
+
+            current_song.lines[i].staff[0].clef = notation_config.instrument.clef;
+            var clef = notation_config.instrument.clef;
+
             var current_key = RJ_parse.key_signature(current_song.lines[i].staff[0].key);
 
-            var current_key_signature = _functions.key_signature_from_teoria_key(current_key, clef);
-            var transposed_key_signature = _functions.key(current_key, clef, teoria_interval);
+            var current_key_signature = _functions.key_signature_from_teoria_key(current_key, clef.type);
+            var transposed_key_signature = _functions.key(current_key, clef.type, teoria_interval);
 
             var line_of_notes = current_song.lines[i].staff[0].voices[0];
 
@@ -796,8 +832,7 @@ var RJ_transpose = (function() {
             current_song.lines[i].staff[0].key = transposed_key_signature;
         }
 
-        var chord_scheme = _functions.chord_scheme();
-        console.log("About to render " + chord_scheme);
+        var chord_scheme = RJ_parse.chord_scheme();
         RJ_render.chords(chord_scheme);
 
         update_current_key();
@@ -824,9 +859,7 @@ function update_current_key() {
 
     var key = RJ_parse.key_signature(current_song.lines[0].staff[0].key);
 
-    key = RJ_teoria_abc_glue.teoria_chord_name_to_abc_chord_name(key);
-
-    $('#transpose_menu option[value=' + key + ']').attr('selected', true);
+    notation_config.song.key = RJ_teoria_abc_glue.teoria_chord_name_to_abc_chord_name(key);
 }
 
 /*
@@ -844,21 +877,19 @@ function redraw_everything() {
     }
 }
 
-
-function create_nav_bars() { //jshint ignore:line
-    $("# navbar ").navbar();
-}
-
-function song_listview_event_handler(event) { // jshint ignore:line
-
-    var song_path = this.getAttribute('data-path');
-
+function load_current_song() {
     $.mobile.loading('show', {
         theme: "b",
         text: "Loading " + this.text
     });
-    RJ_parse.song(song_path);
+    RJ_parse.song(current_song_path);
     $.mobile.loading('hide');
+}
+
+function song_listview_event_handler(event) { // jshint ignore:line
+
+    current_song_path = this.getAttribute('data-path');
+    load_current_song();
 }
 
 function transpose_listview_event_handler(event) { // jshint ignore:line
@@ -867,11 +898,40 @@ function transpose_listview_event_handler(event) { // jshint ignore:line
     transpose_and_redraw(key);
 }
 
+function instrument_select_event_handler(event) { // jshint ignore:line
+
+    var key = this.getAttribute('data-key');
+    var clef = this.getAttribute('data-clef');
+
+    console.log("A instrument with the " + key + " was selected in the " + clef + " clef");
+
+    var clef_obj = {};
+
+    switch (clef) {
+        default:
+        case 'treble':
+            clef_obj.type = "treble";
+            clef_obj.verticalPos = 0;
+            break;
+        case 'bass':
+            clef_obj.type = "bass";
+            clef_obj.verticalPos = 0;
+            break;
+    }
+
+    notation_config.instrument.key = key;
+    notation_config.instrument.clef = clef_obj;
+
+    load_current_song();
+}
+
+
 function subscribe_to_events() { // jshint ignore:line
 
     // Event handler when different song is selected
     $('#song_menu').on('click', 'li', song_listview_event_handler);
     $('#transpose_menu').on('click', 'li', transpose_listview_event_handler);
+    $('#choose_view_menu').on('click', 'li', instrument_select_event_handler);
 
     // Event handler window resize event
     $(window).bind('resize', function(e) { // jshint ignore:line
@@ -897,7 +957,6 @@ function transpose_and_redraw(key) {
     }
 }
 
-
 function selectCurrentChord(svgShapeId) { // jshint ignore:line
 
     var partThatWasClicked = document.getElementById(svgShapeId);
@@ -920,11 +979,11 @@ function scaleElementToPage(element) { // jshint ignore:line
 }
 
 function init() { // jshint ignore:line
-    /*create_nav_bars();*/
-    subscribe_to_events();
-    RJ_parse.load_songs();
 
     RJ_parse.init();
+
+    subscribe_to_events();
+    RJ_parse.load_songs();
 
     redraw_everything();
 }

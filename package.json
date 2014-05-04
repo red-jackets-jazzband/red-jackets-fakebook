@@ -28,6 +28,7 @@
     "grunt-contrib-compress": "~0.8.0",
     "grunt-complexity": "~0.1.51",
     "grunt-svgmin": "~0.4.0",
-    "grunt-strip-code": "~0.1.2"
+    "grunt-strip-code": "~0.1.2",
+    "grunt-responsive-images": "~0.1.2"
   }
 }

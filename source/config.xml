@@ -18,7 +18,9 @@
     </author>
 
     <icon src="icon_1024.png" />
-    <gap:splash src="splash.png" width="769" height="1024" />
+    <!-- <gap:splash src="images/splash-400x240.png" width="240" height="400" />-->
+    <gap:splash src="images/splash-800x480.png" width="480" height="800" />
+    <!--<gap:splash src="images/splash-1600x960.png" width="960" height="1600" />-->
     <preference name="android-targetSdkVersion" value="14" />
 
 
