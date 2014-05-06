@@ -397,6 +397,18 @@ var RJ_teoria_abc_glue = (function() {
 
     var center_octave = 2;
     var notes_per_octave = 7;
+
+    _functions.get_pitch_offset_of_clef = function(clef) {
+
+        var pitch_offset = 0;
+
+        if (clef.type === "bass") {
+            pitch_offset = -2;
+        }
+
+        return pitch_offset;
+    };
+
     /*
      
      */
@@ -542,6 +554,7 @@ var RJ_teoria_abc_glue = (function() {
    Parameters:
 
        teoria_note - A teoria note
+       clef - to determine the note offset
 
    Returns:
 
@@ -552,7 +565,7 @@ var RJ_teoria_abc_glue = (function() {
 
         var teoria_to_abc_pitches = "cdefgab ";
 
-        var pitch_offset = (clef === undefined) ? 0 : (clef.type === 'bass') ? -2 : 0;
+        var pitch_offset = (clef === undefined) ? 0 : RJ_teoria_abc_glue.get_pitch_offset_of_clef(clef);
 
         var pitch = teoria_to_abc_pitches.indexOf(teoria_note.name());
 
@@ -743,6 +756,8 @@ var RJ_transpose = (function() {
             return abc_note;
         }
 
+        var clef = notation_config.instrument.clef;
+
         _functions.add_acc_from_key_signature(abc_note, current_key_signature);
 
         // parse the note
@@ -751,7 +766,7 @@ var RJ_transpose = (function() {
         // transpose
         var intv = teoria_interval.toString();
         var transposed_note = teoria_note.interval(intv);
-        var transposed_abc_note = RJ_teoria_abc_glue.teoria_note_to_abc_note(transposed_note);
+        var transposed_abc_note = RJ_teoria_abc_glue.teoria_note_to_abc_note(transposed_note, clef);
 
         _functions.remove_acc_from_key_signature(transposed_abc_note, transposed_key_signature);
 
