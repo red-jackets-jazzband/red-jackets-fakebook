@@ -7,3 +7,6 @@ node_modules/*
 
 # Generated files
 red-jackets-fakebook.zip
+
+# Temp files
+*.swp
