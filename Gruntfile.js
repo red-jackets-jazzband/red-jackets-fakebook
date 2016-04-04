@@ -29,11 +29,12 @@ module.exports = function(grunt) {
         natural_docs: {
             options: {
                 bin: '/usr/bin/NaturalDocs',
-                projects: '/opt/NaturalDocs/projects',
+                //projects: '/opt/NaturalDocs/projects',
                 format: 'HTML'
             },
             red_jackets: {
-                project: '/RedJacketsFakebook',
+                //project: '/RedJacketsFakebook',
+                project: './',
                 src: '/home/ben/Dropbox/Red\ Jackets/RedJacketsFakebook',
                 output: '/docs',
                 inputs: ['/source/scripts'],
@@ -66,7 +67,7 @@ module.exports = function(grunt) {
                 src: ['build/css/*.css', 'build/css/fonts/*.css', '!build/css/red-jackets-fakebook.css']
             },
             scripts: {
-                src: ['build/scripts/*.js', 'build/scripts/', '!build/red-jackets-fakebook.js']
+                src: ['build/scripts/*.js', '!build/red-jackets-fakebook.js']
             },
             zip: {
                 src: ['red-jackets-fakebook.zip']
@@ -82,6 +83,8 @@ module.exports = function(grunt) {
             build: {
                 options: {
                     mangle: true,
+                    beautify: false,
+                    preserveComments: false,
                     banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */'
                 },
                 files: {

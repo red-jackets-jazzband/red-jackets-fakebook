@@ -150,6 +150,8 @@ var RJ_render = (function() {
     _functions.song = function(song_to_render) {
 
         paper_score.clear();
+
+        //console.dir(song_to_render);
         printer.printABC(song_to_render);
     };
 
@@ -267,14 +269,14 @@ var RJ_parse = (function() {
 
     _private.string_to_abc_tune = function(text) {
 
-        console.log("parse_string_to_abc_tune ");
+        //console.log("parse_string_to_abc_tune ");
 
         var tunebook = new AbcTuneBook(text);
 
         abcParser.parse(tunebook.tunes[0].abc); //TODO handle multiple tunes
         current_song = abcParser.getTune();
 
-        var base_instrument_key = 'C';
+        var base_instrument_key = 'C3';
 
         var interval = teoria.interval.between(teoria.note(notation_config.instrument.key),
             teoria.note(base_instrument_key));
@@ -467,7 +469,7 @@ var RJ_teoria_abc_glue = (function() {
         var abc_root_note = abc_note.pitches[0].pitch;
 
         /* Get it range to calculate letter */
-        var pitch_idx = abc_root_note % notes_per_octave;
+        var pitch_idx = abc_root_note % (notes_per_octave);
 
         while (pitch_idx < 0) {
             pitch_idx += notes_per_octave;
@@ -615,6 +617,8 @@ var RJ_transpose = (function() {
     var _functions = {};
     var _private = {};
 
+    var notes_per_octave = 7;
+
     /*
     Funcion: key_signature_from_teoria_key
     Returns all accidentals that come with a key
@@ -682,7 +686,8 @@ var RJ_transpose = (function() {
 
         for (var i = 0; i < key.accidentals.length; i++) {
 
-            if ((abc_root_note.verticalPos % 8) === (key.accidentals[i].verticalPos % 8)) {
+            if ((abc_root_note.verticalPos % notes_per_octave) ===
+                (key.accidentals[i].verticalPos % notes_per_octave)) {
 
                 switch (abc_root_note.accidental) {
 
@@ -709,7 +714,8 @@ var RJ_transpose = (function() {
 
         for (var i = 0; i < key.accidentals.length; i++) {
 
-            if ((abc_root_note.verticalPos % 8) === (key.accidentals[i].verticalPos % 8)) {
+            if ((abc_root_note.verticalPos % notes_per_octave) ===
+                (key.accidentals[i].verticalPos % notes_per_octave)) {
 
                 switch (abc_root_note.accidental) {
 
@@ -842,16 +848,22 @@ var RJ_transpose = (function() {
 
         for (var i = 0; i < current_song.lines.length; i++) {
 
-            console.log("Original clef " + current_song.lines[i].staff[0].clef.type +
-                " @" + current_song.lines[i].staff[0].clef.verticalPos);
+            /*  console.log("Original clef " + current_song.lines[i].staff[0].clef.type +
+                " @" + current_song.lines[i].staff[0].clef.verticalPos);*/
 
             current_song.lines[i].staff[0].clef = notation_config.instrument.clef;
             var clef = notation_config.instrument.clef;
 
             var current_key = RJ_parse.key_signature(current_song.lines[i].staff[0].key);
 
-            var current_key_signature = _functions.key_signature_from_teoria_key(current_key, clef.type);
-            var transposed_key_signature = _functions.key(current_key, clef.type, teoria_interval);
+            var current_key_signature = _functions.key_signature_from_teoria_key(current_key, clef);
+            var transposed_key_signature = _functions.key(current_key, clef, teoria_interval);
+
+            /* console.log('parsed key:' + current_key);*/
+            /*console.log('key sig from teoria:');
+            console.dir(current_key_signature);*/
+            /*console.log('transposed key sig:');
+            console.dir(transposed_key_signature);*/
 
             var line_of_notes = current_song.lines[i].staff[0].voices[0];
 
@@ -881,6 +893,39 @@ var RJ_transpose = (function() {
     return _functions;
 
 }());
+
+/*
+ 
+ */
+
+function createPDFObject(filename) {
+
+
+
+    var pdf = new jsPDF('p', 'pt', 'a4'); //jshint ignore:line
+
+
+    pdf.setFontSize(20);
+    pdf.setFont('times');
+
+    pdf.setTextColor(255, 142, 0);
+    pdf.text(200, 20, 'Red Jackets Jazzband');
+
+    pdf.setTextColor(0, 0, 0);
+    pdf.setFontSize(10);
+
+    var svg = $('#chords > svg').get(0);
+
+    svgElementToPdf(svg, pdf, { //jshint ignore:line
+        //scale: 72 / 96, // this is the ratio of px to pt units
+        scale: 0.6,
+        removeInvalid: true, // this removes elements that could not be translated to pdf from the source svg
+        x_offset: 40,
+        y_offset: 40,
+    });
+
+    pdf.save(filename + '.pdf');
+}
 
 /*
    Function: update_current_key
@@ -916,6 +961,11 @@ function load_current_song() {
     });
     RJ_parse.song(current_song_path);
     $.mobile.loading('hide');
+}
+
+function export_listview_event_handler(event) { // jshint ignore:line
+
+    createPDFObject("first_test");
 }
 
 function song_listview_event_handler(event) { // jshint ignore:line
@@ -971,6 +1021,7 @@ function subscribe_to_events() { // jshint ignore:line
     $('#transpose_menu').on('click', 'li', transpose_listview_event_handler);
     $('#octavate_menu').on('click', 'li', octavate_listview_event_handler);
     $('#choose_view_menu').on('click', 'li', instrument_select_event_handler);
+    $('#export_menu').on('click', 'li', export_listview_event_handler);
 
     // Event handler window resize event
     $(window).bind('resize', function(e) { // jshint ignore:line

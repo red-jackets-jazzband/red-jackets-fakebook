@@ -1,4 +1,4 @@
-module('RJ_teoria_abc_glue.abc_duration_to_teoria_duration');
+QUnit.module('RJ_teoria_abc_glue.abc_duration_to_teoria_duration');
 test('dots', function() {
     equal(RJ_teoria_abc_glue.abc_duration_to_teoria_duration(0.5).dots, 0, 'no dots with 0.5');
     equal(RJ_teoria_abc_glue.abc_duration_to_teoria_duration(0.75).dots, 1, '1 dot with 0.75');
@@ -27,364 +27,112 @@ test('value', function() {
     equal(RJ_teoria_abc_glue.abc_duration_to_teoria_duration(0.0625).value, 16, 'Sixteenth note with 0.0625');
 });
 
-module('RJ_teoria_abc_glue.teoria_duration_to_abc_duration');
+QUnit.module('RJ_teoria_abc_glue.teoria_duration_to_abc_duration');
 test('RJ_teoria_abc_glue.teoria_duration_to_abc_duration', function() {
 
-    equal(RJ_teoria_abc_glue.teoria_duration_to_abc_duration({
-        value: 1,
-        dots: 0
-    }), 1.0, 'Whole note');
-    equal(RJ_teoria_abc_glue.teoria_duration_to_abc_duration({
-        value: 2,
-        dots: 0
-    }), 0.5, 'Half note');
-    equal(RJ_teoria_abc_glue.teoria_duration_to_abc_duration({
-        value: 4,
-        dots: 0
-    }), 0.25, 'Quarter note');
-    equal(RJ_teoria_abc_glue.teoria_duration_to_abc_duration({
-        value: 8,
-        dots: 0
-    }), 0.125, 'Eigth note');
-    equal(RJ_teoria_abc_glue.teoria_duration_to_abc_duration({
-        value: 16,
-        dots: 0
-    }), 0.0625, 'Sixteenth note');
+    var test_set = [{ teoria_dur: { value:  1, dots: 0}, abc_dur: 1.0,    txt: 'Whole note'},
+                    { teoria_dur: { value:  2, dots: 0}, abc_dur: 0.5,    txt: 'Half note'},
+                    { teoria_dur: { value:  4, dots: 0}, abc_dur: 0.25,   txt: 'Quarter note'},
+                    { teoria_dur: { value:  8, dots: 0}, abc_dur: 0.125,  txt: 'Eight note'},
+                    { teoria_dur: { value: 16, dots: 0}, abc_dur: 0.0625, txt: 'Sixteenth note'},
 
-    equal(RJ_teoria_abc_glue.teoria_duration_to_abc_duration({
-        value: 2,
-        dots: 1
-    }), 0.75, 'Half note 1 dot');
-    equal(RJ_teoria_abc_glue.teoria_duration_to_abc_duration({
-        value: 4,
-        dots: 1
-    }), 0.375, 'Quarter note 1 dot');
-    equal(RJ_teoria_abc_glue.teoria_duration_to_abc_duration({
-        value: 8,
-        dots: 1
-    }), 0.1875, 'Eigth note 1 dot');
+                    { teoria_dur: { value:  2, dots: 1}, abc_dur: 0.75,   txt: 'Half note 1 dot'},
+                    { teoria_dur: { value:  4, dots: 1}, abc_dur: 0.375,  txt: 'Quarter note 1 dot'},
+                    { teoria_dur: { value:  8, dots: 1}, abc_dur: 0.1875, txt: 'Eigth note 1 dot'},
 
-    equal(RJ_teoria_abc_glue.teoria_duration_to_abc_duration({
-        value: 2,
-        dots: 2
-    }), 0.875, 'Half note 2 dots');
+                    { teoria_dur: { value:  2, dots: 2}, abc_dur: 0.875,  txt: 'Half note 2 dots'}]
+
+    test_set.forEach(function(set) {
+
+        equal(RJ_teoria_abc_glue.teoria_duration_to_abc_duration({
+            value: set.teoria_dur.value,
+            dots: set.teoria_dur.dots,
+        }), set.abc_dur, set.txt);
+
+    });
 });
 
-module('RJ_teoria_abc_glue.teoria_note_to_abc_note');
+QUnit.module('RJ_teoria_abc_glue.teoria_note_to_abc_note');
 test('c-note', function() {
 
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('c\'')), {
-        "pitches": [{
-            pitch: 14,
-            verticalPos: 14,
-            accidental: ""
-        }]
-    }, 'c\' note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('c')), {
+    var test_set = [{ teoria_note: 'c\'', abc: { pitch: 14, acc: ''     }},
+                    { teoria_note: 'c',   abc: { pitch:  7, acc: ''     }},
+                    { teoria_note: 'c#',  abc: { pitch:  7, acc: 'sharp'}},
+                    { teoria_note: 'C',   abc: { pitch:  0, acc: ''     }},
+                    { teoria_note: 'C,',  abc: { pitch: -7, acc: ''     }},
+                    { teoria_note: 'Cb,', abc: { pitch: -7, acc: 'flat' }}]
 
-        "pitches": [{
-            pitch: 7,
-            verticalPos: 7,
-            accidental: ""
-        }]
-
-    }, 'c note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('c#')), {
-        "pitches": [{
-            pitch: 7,
-            verticalPos: 7,
-            accidental: "sharp"
-        }]
-    }, 'c# note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('C')), {
-        "pitches": [{
-            pitch: 0,
-            verticalPos: 0,
-            accidental: ""
-        }]
-    }, 'C note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('C,')), {
-        "pitches": [{
-            pitch: -7,
-            verticalPos: -7,
-            accidental: ""
-        }]
-    }, 'C, note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('Cb,')), {
-        "pitches": [{
-            pitch: -7,
-            verticalPos: -7,
-            accidental: "flat"
-        }]
-    }, 'Cb, note');
+     test_teoria_note_to_abc( test_set);
 });
 test('d-note', function() {
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('d\'')), {
-        "pitches": [{
-            pitch: 15,
-            verticalPos: 15,
-            accidental: ""
-        }]
-    }, 'd\' note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('d')), {
-        "pitches": [{
-            pitch: 8,
-            verticalPos: 8,
-            accidental: ""
-        }]
-    }, 'd note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('d#')), {
-        "pitches": [{
-            pitch: 8,
-            verticalPos: 8,
-            accidental: "sharp"
-        }]
-    }, 'd# note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('D')), {
-        "pitches": [{
-            pitch: 1,
-            verticalPos: 1,
-            accidental: ""
-        }]
-    }, 'D note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('D,')), {
-        "pitches": [{
-            pitch: -6,
-            verticalPos: -6,
-            accidental: ""
-        }]
-    }, 'D, note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('Db,')), {
-        "pitches": [{
-            pitch: -6,
-            verticalPos: -6,
-            accidental: "flat"
-        }]
-    }, 'Db, note');
+
+    var test_set = [{ teoria_note: 'd\'', abc: { pitch: 15, acc: ''     }},
+                    { teoria_note: 'd',   abc: { pitch:  8, acc: ''     }},
+                    { teoria_note: 'd#',  abc: { pitch:  8, acc: 'sharp'}},
+                    { teoria_note: 'D',   abc: { pitch:  1, acc: ''     }},
+                    { teoria_note: 'D,',  abc: { pitch: -6, acc: ''     }},
+                    { teoria_note: 'Db,', abc: { pitch: -6, acc: 'flat' }}]
+
+     test_teoria_note_to_abc( test_set);
+
 });
 test('e-note', function() {
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('e\'')), {
-        "pitches": [{
-            pitch: 16,
-            verticalPos: 16,
-            accidental: ""
-        }]
-    }, 'e\' note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('e')), {
-        "pitches": [{
-            pitch: 9,
-            verticalPos: 9,
-            accidental: ""
-        }]
-    }, 'e note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('e#')), {
-        "pitches": [{
-            pitch: 9,
-            verticalPos: 9,
-            accidental: "sharp"
-        }]
-    }, 'e# note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('E')), {
-        "pitches": [{
-            pitch: 2,
-            verticalPos: 2,
-            accidental: ""
-        }]
-    }, 'E note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('E,')), {
-        "pitches": [{
-            pitch: -5,
-            verticalPos: -5,
-            accidental: ""
-        }]
-    }, 'E, note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('Eb,')), {
-        "pitches": [{
-            pitch: -5,
-            verticalPos: -5,
-            accidental: "flat"
-        }]
-    }, 'Eb, note');
+
+    var test_set = [{ teoria_note: 'e\'', abc: { pitch: 16, acc: ''     }},
+                    { teoria_note: 'e',   abc: { pitch:  9, acc: ''     }},
+                    { teoria_note: 'e#',  abc: { pitch:  9, acc: 'sharp'}},
+                    { teoria_note: 'E',   abc: { pitch:  2, acc: ''     }},
+                    { teoria_note: 'E,',  abc: { pitch: -5, acc: ''     }},
+                    { teoria_note: 'Eb,', abc: { pitch: -5, acc: 'flat' }}]
+
+     test_teoria_note_to_abc( test_set);
 });
 test('f-note', function() {
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('f\'')), {
-        "pitches": [{
-            pitch: 17,
-            verticalPos: 17,
-            accidental: ""
-        }]
-    }, 'f\' note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('f')), {
-        "pitches": [{
-            pitch: 10,
-            verticalPos: 10,
-            accidental: ""
-        }]
-    }, 'f note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('f#')), {
-        "pitches": [{
-            pitch: 10,
-            verticalPos: 10,
-            accidental: "sharp"
-        }]
-    }, 'f# note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('F')), {
-        "pitches": [{
-            pitch: 3,
-            verticalPos: 3,
-            accidental: ""
-        }]
-    }, 'F note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('F,')), {
-        "pitches": [{
-            pitch: -4,
-            verticalPos: -4,
-            accidental: ""
-        }]
-    }, 'F, note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('Fb,')), {
-        "pitches": [{
-            pitch: -4,
-            verticalPos: -4,
-            accidental: "flat"
-        }]
-    }, 'Fb, note');
+
+    var test_set = [{ teoria_note: 'f\'', abc: { pitch: 17, acc: ''     }},
+                    { teoria_note: 'f',   abc: { pitch: 10, acc: ''     }},
+                    { teoria_note: 'f#',  abc: { pitch: 10, acc: 'sharp'}},
+                    { teoria_note: 'F',   abc: { pitch:  3, acc: ''     }},
+                    { teoria_note: 'F,',  abc: { pitch: -4, acc: ''     }},
+                    { teoria_note: 'Fb,', abc: { pitch: -4, acc: 'flat' }}]
+
+    test_teoria_note_to_abc( test_set);
 });
 test('g-note', function() {
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('g\'')), {
-        "pitches": [{
-            pitch: 18,
-            verticalPos: 18,
-            accidental: ""
-        }]
-    }, 'g\' note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('g')), {
-        "pitches": [{
-            pitch: 11,
-            verticalPos: 11,
-            accidental: ""
-        }]
-    }, 'g note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('g#')), {
-        "pitches": [{
-            pitch: 11,
-            verticalPos: 11,
-            accidental: "sharp"
-        }]
-    }, 'g# note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('G')), {
-        "pitches": [{
-            pitch: 4,
-            verticalPos: 4,
-            accidental: ""
-        }]
-    }, 'G note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('G,')), {
-        "pitches": [{
-            pitch: -3,
-            verticalPos: -3,
-            accidental: ""
-        }]
-    }, 'G, note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('Gb,')), {
-        "pitches": [{
-            pitch: -3,
-            verticalPos: -3,
-            accidental: "flat"
-        }]
-    }, 'Gb, note');
+
+    var test_set = [{ teoria_note: 'g\'', abc: { pitch: 18, acc: ''     }},
+                    { teoria_note: 'g',   abc: { pitch: 11, acc: ''     }},
+                    { teoria_note: 'g#',  abc: { pitch: 11, acc: 'sharp'}},
+                    { teoria_note: 'G',   abc: { pitch:  4, acc: ''     }},
+                    { teoria_note: 'G,',  abc: { pitch: -3, acc: ''     }},
+                    { teoria_note: 'Gb,', abc: { pitch: -3, acc: 'flat' }}]
+
+    test_teoria_note_to_abc( test_set);
 });
 test('a-note', function() {
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('a\'')), {
-        "pitches": [{
-            pitch: 19,
-            verticalPos: 19,
-            accidental: ""
-        }]
-    }, 'a\' note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('a')), {
-        "pitches": [{
-            pitch: 12,
-            verticalPos: 12,
-            accidental: ""
-        }]
-    }, 'a note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('a#')), {
-        "pitches": [{
-            pitch: 12,
-            verticalPos: 12,
-            accidental: "sharp"
-        }]
-    }, 'a# note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('A')), {
-        "pitches": [{
-            pitch: 5,
-            verticalPos: 5,
-            accidental: ""
-        }]
-    }, 'A note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('A,')), {
-        "pitches": [{
-            pitch: -2,
-            verticalPos: -2,
-            accidental: ""
-        }]
-    }, 'A, note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('Ab,')), {
-        "pitches": [{
-            pitch: -2,
-            verticalPos: -2,
-            accidental: "flat"
-        }]
-    }, 'Ab, note');
+
+    var test_set = [{ teoria_note: 'a\'', abc: { pitch: 19, acc: ''     }},
+                    { teoria_note: 'a',   abc: { pitch: 12, acc: ''     }},
+                    { teoria_note: 'a#',  abc: { pitch: 12, acc: 'sharp'}},
+                    { teoria_note: 'A',   abc: { pitch:  5, acc: ''     }},
+                    { teoria_note: 'A,',  abc: { pitch: -2, acc: ''     }},
+                    { teoria_note: 'Ab,', abc: { pitch: -2, acc: 'flat' }}]
+
+    test_teoria_note_to_abc( test_set);
 });
 test('b-note', function() {
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('b\'')), {
-        "pitches": [{
-            pitch: 20,
-            verticalPos: 20,
-            accidental: ""
-        }]
-    }, 'b\' note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('b')), {
-        "pitches": [{
-            pitch: 13,
-            verticalPos: 13,
-            accidental: ""
-        }]
-    }, 'b note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('b#')), {
-        "pitches": [{
-            pitch: 13,
-            verticalPos: 13,
-            accidental: "sharp"
-        }]
-    }, 'b# note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('B')), {
-        "pitches": [{
-            pitch: 6,
-            verticalPos: 6,
-            accidental: ""
-        }]
-    }, 'B note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('B,')), {
-        "pitches": [{
-            pitch: -1,
-            verticalPos: -1,
-            accidental: ""
-        }]
-    }, 'B, note');
-    deepEqual(RJ_teoria_abc_glue.teoria_note_to_abc_note(teoria.note('Bb,')), {
-        "pitches": [{
-            pitch: -1,
-            verticalPos: -1,
-            accidental: "flat"
-        }]
-    }, 'Bb, note');
 
+    var test_set = [{ teoria_note: 'b\'', abc: { pitch: 20, acc: ''     }},
+                    { teoria_note: 'b',   abc: { pitch: 13, acc: ''     }},
+                    { teoria_note: 'b#',  abc: { pitch: 13, acc: 'sharp'}},
+                    { teoria_note: 'B',   abc: { pitch:  6, acc: ''     }},
+                    { teoria_note: 'B,',  abc: { pitch: -1, acc: ''     }},
+                    { teoria_note: 'Bb,', abc: { pitch: -1, acc: 'flat' }}]
+
+    test_teoria_note_to_abc( test_set);
 });
 
-module('RJ_transpose.key_signature_from_teoria_key');
+QUnit.module('RJ_transpose.key_signature_from_teoria_key');
 test('default', function() {
     var clef = create_clef("treble");
 
@@ -400,11 +148,9 @@ test('default', function() {
     deepEqual(RJ_transpose.key_signature_from_teoria_key('A', clef), create_key_signature("AM"));
     deepEqual(RJ_transpose.key_signature_from_teoria_key('A#', clef), create_key_signature("BbM"));
     deepEqual(RJ_transpose.key_signature_from_teoria_key('B', clef), create_key_signature("BM"));
-
-
 });
 
-module('RJ_transpose.key');
+QUnit.module('RJ_transpose.key');
 test('Perfect interval', function() {
 
     var clef = create_clef("treble");
@@ -456,272 +202,100 @@ test('Diminished interval', function() {
     var current_key_signature = create_key_signature("CM");
 
     /* Currently RJ_transpose.key does not transpose to double flat scales */
-    deepEqual(RJ_transpose.key("C", clef, teoria.interval('d1')), create_key_signature("CbM"), 'Test transpose key C with d1 to CbM');
-    /*deepEqual(RJ_transpose.key("C", clef, teoria.interval('d2')), create_key_signature("AM"), 'Test transpose key C with d2 to EbM');
+    /*deepEqual(RJ_transpose.key("C", clef, teoria.interval('d1')), create_key_signature("CbM"), 'Test transpose key C with d1 to CbM');
+    deepEqual(RJ_transpose.key("C", clef, teoria.interval('d2')), create_key_signature("AM"), 'Test transpose key C with d2 to EbM');
     deepEqual(RJ_transpose.key("C", clef, teoria.interval('d3')), create_key_signature("FM"), 'Test transpose key C with d3 to FM');
     deepEqual(RJ_transpose.key("C", clef, teoria.interval('d4')), create_key_signature("F#M"), 'Test transpose key C with d4 to F#M');
     deepEqual(RJ_transpose.key("C", clef, teoria.interval('d5')), create_key_signature("AbM"), 'Test transpose key C with d5 to AbM');
     deepEqual(RJ_transpose.key("C", clef, teoria.interval('d6')), create_key_signature("BbM"), 'Test transpose key C with d6 to BbM');
-    deepEqual(RJ_transpose.key("C", clef, teoria.interval('d7')), create_key_signature("CM"), 'Test transpose key C with d7 to CM');*/
-    deepEqual(RJ_transpose.key("C", clef, teoria.interval('d8')), create_key_signature("CbM"), 'Test transpose key C with d8 to C#M');
+    deepEqual(RJ_transpose.key("C", clef, teoria.interval('d7')), create_key_signature("CM"), 'Test transpose key C with d7 to CM');
+    deepEqual(RJ_transpose.key("C", clef, teoria.interval('d8')), create_key_signature("CbM"), 'Test transpose key C with d8 to C#M');*/
+    expect(0);
 });
 
+QUnit.module('RJ_transpose.line');
+test('B Bb', function() {
 
+    // Setup
+    var key = 'CM', clef = 'treble', interval = 'm2'
 
-module('RJ_transpose.note');
-test('Perfect', function() {
+    //from = [['b','flat'], ['a','']]
+    from = ['Bb', 'A']
+    //to   = [['C','flat'], ['b','flat']]
+    to   = ['Cb', 'B']
 
-    var test_set = [{
-        interval: 'P1',
-        pitch: 0,
-        accidental: '',
-        text_pitch: 'Transpose a C note a perfect first up results in C note',
-        text_acc: 'Transpose a C note a perfect first up results in no accidental'
-    }, {
-        interval: 'P4',
-        pitch: 3,
-        accidental: '',
-        text_pitch: 'Transpose a C note a perfect fourth up results in F note',
-        text_acc: 'Transpose a C note a perfect fourth up results in no accidental'
-    }, {
-        interval: 'P5',
-        pitch: 4,
-        accidental: '',
-        text_pitch: 'Transpose a C note a perfect fifth up results in G note',
-        text_acc: 'Transpose a C note a perfect fifth up results in no accidental'
-    }, {
-        interval: 'P8',
-        pitch: 7,
-        accidental: '',
-        text_pitch: 'Transpose a C note a perfect eighth up results in C note',
-        text_acc: 'Transpose a C note a perfect eighth up results in no accidental'
-    }];
-
-    test_set.forEach(function(set) {
-
-        var note = create_note();
-        var clef = create_clef("treble");
-
-        var current_key_signature = create_key_signature("CM");
-
-        var intv = teoria.interval(set.interval);
-        var transposed_key_signature = RJ_transpose.key("C", clef, intv);
-        var transposed_note = RJ_transpose.note(note, intv, current_key_signature, transposed_key_signature);
-
-        deepEqual(transposed_note.pitches[0].pitch, set.pitch, set.text_pitch);
-        deepEqual(transposed_note.pitches[0].accidental, set.accidental, set.text_acc);
-    });
+    test_transpose_line(key, clef, from, interval, to)
 });
 
-test('Major', function() {
+test('Jingle bells', function() {
 
-    var test_set = [{
-        interval: 'M2',
-        pitch: 1,
-        accidental: '',
-        text_pitch: 'Transpose a C note a major second up results in D note',
-        text_acc: 'Transpose a C note a major second up results in no accidental'
-    }, {
-        interval: 'M3',
-        pitch: 2,
-        accidental: '',
-        text_pitch: 'Transpose a C note a major third up results in E note',
-        text_acc: 'Transpose a C note a major third up results in no accidental'
-    }, {
-        interval: 'M6',
-        pitch: 5,
-        accidental: '',
-        text_pitch: 'Transpose a C note a major sixth up results in G note',
-        text_acc: 'Transpose a C note a major sixth up results in no accidental'
-    }, {
-        interval: 'M7',
-        pitch: 6,
-        accidental: '',
-        text_pitch: 'Transpose a C note a major seventh up results in B note',
-        text_acc: 'Transpose a C note a major seventh up results in no accidental'
-    }];
+    // Setup
+    var key = 'FM', clef = 'treble', interval = 'P5'
 
-    test_set.forEach(function(set) {
+    from = ['a', 'c', 'f', 'g']
+    to   = ['E', 'g', 'C', 'D']
 
-        var note = create_note();
-        var clef = create_clef("treble");
-
-        var current_key_signature = create_key_signature("CM");
-
-        var intv = teoria.interval(set.interval);
-        var transposed_note = RJ_transpose.note(note, intv, current_key_signature, current_key_signature);
-
-        deepEqual(transposed_note.pitches[0].pitch, set.pitch, set.text_pitch);
-        deepEqual(transposed_note.pitches[0].accidental, set.accidental, set.text_acc);
-    });
+    test_transpose_line(key, clef, from, interval, to)
 });
 
-test('Minor', function() {
+QUnit.module('RJ_transpose.note');
+QUnit.test('Perfect', function(assert) {
 
-    var test_set = [{
-        interval: 'm2',
-        pitch: 1,
-        accidental: 'flat',
-        text_pitch: 'Transpose a C note a minor second up results in D note',
-        text_acc: 'Transpose a C note a minor second up results in a flat accidental'
-    }, {
-        interval: 'm3',
-        pitch: 2,
-        accidental: 'flat',
-        text_pitch: 'Transpose a C note a minor third up results in E note',
-        text_acc: 'Transpose a C note a minor third up results in a flat accidental'
-    }, {
-        interval: 'm6',
-        pitch: 5,
-        accidental: 'flat',
-        text_pitch: 'Transpose a C note a minor sixth up results in A note',
-        text_acc: 'Transpose a C note a minor sixth up results in a flat accidental'
-    }, {
-        interval: 'm7',
-        pitch: 6,
-        accidental: 'flat',
-        text_pitch: 'Transpose a C note a minor seventh up results in B note',
-        text_acc: 'Transpose a C note a minor seventh up results in a flat accidental'
-    }];
+    var test_set = [{ input: {note: 'c', acc:''}, interval: 'P1', exp: { note: 'c', acc: ''}},
+                    { input: {note: 'c', acc:''}, interval: 'P4', exp: { note: 'f', acc: ''}},
+                    { input: {note: 'c', acc:''}, interval: 'P5', exp: { note: 'g', acc: ''}},
+                    { input: {note: 'c', acc:''}, interval: 'P8', exp: { note: 'C', acc: ''}}]
 
-    test_set.forEach(function(set) {
-
-        var note = create_note();
-        var clef = create_clef("treble");
-
-        var current_key_signature = create_key_signature("CM");
-
-        var intv = teoria.interval(set.interval);
-        var transposed_note = RJ_transpose.note(note, intv, current_key_signature, current_key_signature);
-
-        deepEqual(transposed_note.pitches[0].pitch, set.pitch, set.text_pitch);
-        deepEqual(transposed_note.pitches[0].accidental, set.accidental, set.text_acc);
-    });
+    test_transpose_note("treble","CM", test_set);
 });
 
-test('Augmented', function() {
+QUnit.test('Major', function(assert) {
 
-    var test_set = [{
-        interval: 'A1',
-        pitch: 0,
-        accidental: 'sharp',
-        text_pitch: 'Transpose a C note a augmented first up results in C note',
-        text_acc: 'Transpose a C note a augmented first up results in a sharp accidental'
-    }, {
-        interval: 'A2',
-        pitch: 1,
-        accidental: 'sharp',
-        text_pitch: 'Transpose a C note a augmented second up results in D note',
-        text_acc: 'Transpose a C note a augmented second up results in a sharp accidental'
-    }, {
-        interval: 'A3',
-        pitch: 2,
-        accidental: 'sharp',
-        text_pitch: 'Transpose a C note a augmented third up results in E note',
-        text_acc: 'Transpose a C note a augmented third up results in a sharp accidental'
-    }, {
-        interval: 'A4',
-        pitch: 3,
-        accidental: 'sharp',
-        text_pitch: 'Transpose a C note a augmented fourth up results in F note',
-        text_acc: 'Transpose a C note a augmented fourth up results in a sharp accidental'
-    }, {
-        interval: 'A5',
-        pitch: 4,
-        accidental: 'sharp',
-        text_pitch: 'Transpose a C note a augmented fifth up results in G note',
-        text_acc: 'Transpose a C note a augmented fifth up results in a sharp accidental'
-    }, {
-        interval: 'A6',
-        pitch: 5,
-        accidental: 'sharp',
-        text_pitch: 'Transpose a C note a augmented sixth up results in A note',
-        text_acc: 'Transpose a C note a augmented sixth up results in a sharp accidental'
-    }, {
-        interval: 'A7',
-        pitch: 6,
-        accidental: 'sharp',
-        text_pitch: 'Transpose a C note a augmented seventh up results in B note',
-        text_acc: 'Transpose a C note a augmented seventh up results in a sharp accidental'
-    }];
+    var test_set = [{ input: {note: 'c', acc:''}, interval: 'M2', exp: { note: 'd', acc: ''}},
+                    { input: {note: 'c', acc:''}, interval: 'M3', exp: { note: 'e', acc: ''}},
+                    { input: {note: 'c', acc:''}, interval: 'M6', exp: { note: 'a', acc: ''}},
+                    { input: {note: 'c', acc:''}, interval: 'M7', exp: { note: 'b', acc: ''}}]
 
-    test_set.forEach(function(set) {
-
-        var note = create_note();
-        var clef = create_clef("treble");
-
-        var current_key_signature = create_key_signature("CM");
-
-        var intv = teoria.interval(set.interval);
-        var transposed_note = RJ_transpose.note(note, intv, current_key_signature, current_key_signature);
-
-        deepEqual(transposed_note.pitches[0].pitch, set.pitch, set.text_pitch);
-        deepEqual(transposed_note.pitches[0].accidental, set.accidental, set.text_acc);
-    });
+    test_transpose_note("treble","CM", test_set);
 });
 
-test('Diminished', function() {
+QUnit.test('Minor', function(assert) {
 
-    var test_set = [{
-        interval: 'd1',
-        pitch: 0,
-        accidental: 'flat',
-        text_pitch: 'Transpose a C note a diminished first up results in C note',
-        text_acc: 'Transpose a C note a diminished first up results in a flat accidental'
-    }, {
-        interval: 'd2',
-        pitch: 1,
-        accidental: 'dblflat',
-        text_pitch: 'Transpose a C note a diminished second up results in D note',
-        text_acc: 'Transpose a C note a diminished second up results in a dblflat accidental'
-    }, {
-        interval: 'd3',
-        pitch: 2,
-        accidental: 'dblflat',
-        text_pitch: 'Transpose a C note a diminished third up results in E note',
-        text_acc: 'Transpose a C note a diminished third up results in a flat accidental'
-    }, {
-        interval: 'd4',
-        pitch: 3,
-        accidental: 'flat',
-        text_pitch: 'Transpose a C note a diminished fourth up results in F note',
-        text_acc: 'Transpose a C note a diminished fourth up results in a flat accidental'
-    }, {
-        interval: 'd5',
-        pitch: 4,
-        accidental: 'flat',
-        text_pitch: 'Transpose a C note a diminished fifth up results in G note',
-        text_acc: 'Transpose a C note a diminished fifth up results in a flat accidental'
-    }, {
-        interval: 'd6',
-        pitch: 5,
-        accidental: 'dblflat',
-        text_pitch: 'Transpose a C note a diminished sixth up results in A note',
-        text_acc: 'Transpose a C note a diminished sixth up results in a dblflat accidental'
-    }, {
-        interval: 'd7',
-        pitch: 6,
-        accidental: 'dblflat',
-        text_pitch: 'Transpose a C note a diminished seventh up results in B note',
-        text_acc: 'Transpose a C note a diminished seventh up results in a dblflat accidental'
-    }];
+    var test_set = [{ input: {note: 'c', acc:''}, interval: 'm2', exp: { note: 'd', acc: 'flat'}},
+                    { input: {note: 'c', acc:''}, interval: 'm3', exp: { note: 'e', acc: 'flat'}},
+                    { input: {note: 'c', acc:''}, interval: 'm6', exp: { note: 'a', acc: 'flat'}},
+                    { input: {note: 'c', acc:''}, interval: 'm7', exp: { note: 'b', acc: 'flat'}}]
 
-    test_set.forEach(function(set) {
-
-        var note = create_note();
-        var clef = create_clef("treble");
-
-        var current_key_signature = create_key_signature("CM");
-
-        var intv = teoria.interval(set.interval);
-        var transposed_note = RJ_transpose.note(note, intv, current_key_signature, current_key_signature);
-
-        deepEqual(transposed_note.pitches[0].pitch, set.pitch, set.text_pitch);
-        deepEqual(transposed_note.pitches[0].accidental, set.accidental, set.text_acc);
-    });
+    test_transpose_note("treble","CM", test_set);
 });
 
-module('parse key signature');
+QUnit.test('Augmented', function(assert) {
+
+    var test_set = [{ input: {note: 'c', acc:''}, interval: 'A1', exp: { note: 'c', acc: 'sharp'}},
+                    { input: {note: 'c', acc:''}, interval: 'A2', exp: { note: 'd', acc: 'sharp'}},
+                    { input: {note: 'c', acc:''}, interval: 'A3', exp: { note: 'e', acc: 'sharp'}},
+                    { input: {note: 'c', acc:''}, interval: 'A4', exp: { note: 'f', acc: 'sharp'}},
+                    { input: {note: 'c', acc:''}, interval: 'A5', exp: { note: 'g', acc: 'sharp'}},
+                    { input: {note: 'c', acc:''}, interval: 'A6', exp: { note: 'a', acc: 'sharp'}},
+                    { input: {note: 'c', acc:''}, interval: 'A7', exp: { note: 'b', acc: 'sharp'}}]
+
+    test_transpose_note("treble","CM", test_set);
+});
+
+QUnit.test('Diminished', function(assert) {
+
+    var test_set = [{ input: {note: 'c', acc:''}, interval: 'd1', exp: { note: 'c', acc: 'flat'}},
+                    { input: {note: 'c', acc:''}, interval: 'd2', exp: { note: 'd', acc: 'dblflat'}},
+                    { input: {note: 'c', acc:''}, interval: 'd3', exp: { note: 'e', acc: 'dblflat'}},
+                    { input: {note: 'c', acc:''}, interval: 'd4', exp: { note: 'f', acc: 'flat'}},
+                    { input: {note: 'c', acc:''}, interval: 'd5', exp: { note: 'g', acc: 'flat'}},
+                    { input: {note: 'c', acc:''}, interval: 'd6', exp: { note: 'a', acc: 'dblflat'}},
+                    { input: {note: 'c', acc:''}, interval: 'd7', exp: { note: 'b', acc: 'dblflat'}}]
+
+    test_transpose_note("treble","CM", test_set);
+});
+
+QUnit.module('parse key signature');
 test('Major', function() {
 
     equal(RJ_parse.key_signature(create_key_signature('CM')), 'CM', 'Cmaj returns CM');
@@ -735,68 +309,19 @@ test('Minor', function() {
     equal(RJ_parse.key_signature(create_key_signature('Gm')), 'BbM', 'Gmin returns BbM');
 });
 
-module('RJ_transpose.add_acc_from_key_signature');
+QUnit.module('RJ_transpose.add_acc_from_key_signature');
 test('flats', function() {
 
     var key_signature = create_key_signature('CbM');
 
-    var test_set = [{
-        pitch: 3,
-        acc_in: '',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Accidental should be unchanged'
-    }, {
-        pitch: 6,
-        acc_in: '',
-        acc_expected: 'flat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be added'
-    }, {
-        pitch: 9,
-        acc_in: '',
-        acc_expected: 'flat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be added'
-    }, {
-        pitch: 5,
-        acc_in: '',
-        acc_expected: 'flat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be added'
-    }, {
-        pitch: 8,
-        acc_in: '',
-        acc_expected: 'flat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be added'
-    }, {
-        pitch: 4,
-        acc_in: '',
-        acc_expected: 'flat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be added'
-    }, {
-        pitch: 7,
-        acc_in: '',
-        acc_expected: 'flat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be added'
-    }, {
-        pitch: 10,
-        acc_in: '',
-        acc_expected: 'flat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be added'
-    }];
+    var test_set = [ 'f', 'b', 'E', 'a', 'D', 'f', 'C', 'F'];
 
-    test_set.forEach(function(set) {
+    test_set.forEach(function(note_str) {
 
-        var note = create_note(set.pitch, set.acc_in);
+        var note = create_note(note_str, '');
         RJ_transpose.add_acc_from_key_signature(note, key_signature);
 
-        deepEqual(note.pitches[0].pitch, set.pitch, set.text_pitch);
-        deepEqual(note.pitches[0].accidental, set.acc_expected, set.text_acc);
+        QUnit.assert.equal_notes(note, note_str, 'flat', 'Flat accidental should be added');
     });
 });
 
@@ -804,63 +329,14 @@ test('dblflats', function() {
 
     var key_signature = create_key_signature('CbM');
 
-    var test_set = [{
-        pitch: 3,
-        acc_in: 'flat',
-        acc_expected: 'flat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be unchanged'
-    }, {
-        pitch: 6,
-        acc_in: 'flat',
-        acc_expected: 'dblflat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be added'
-    }, {
-        pitch: 9,
-        acc_in: 'flat',
-        acc_expected: 'dblflat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be added'
-    }, {
-        pitch: 5,
-        acc_in: 'flat',
-        acc_expected: 'dblflat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be added'
-    }, {
-        pitch: 8,
-        acc_in: 'flat',
-        acc_expected: 'dblflat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be added'
-    }, {
-        pitch: 4,
-        acc_in: 'flat',
-        acc_expected: 'dblflat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be added'
-    }, {
-        pitch: 7,
-        acc_in: 'flat',
-        acc_expected: 'dblflat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be added'
-    }, {
-        pitch: 10,
-        acc_in: 'flat',
-        acc_expected: 'dblflat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be added'
-    }];
+    var test_set = [ 'f', 'b', 'E', 'a', 'D', 'f', 'C', 'F'];
 
-    test_set.forEach(function(set) {
+    test_set.forEach(function(note_str) {
 
-        var note = create_note(set.pitch, set.acc_in);
+        var note = create_note(note_str, 'flat');
         RJ_transpose.add_acc_from_key_signature(note, key_signature);
 
-        deepEqual(note.pitches[0].pitch, set.pitch, set.text_pitch);
-        deepEqual(note.pitches[0].accidental, set.acc_expected, set.text_acc);
+        QUnit.assert.equal_notes(note, note_str, 'dblflat', 'Flat accidental should be added');
     });
 });
 
@@ -868,63 +344,14 @@ test('sharps', function() {
 
     var key_signature = create_key_signature('C#M');
 
-    var test_set = [{
-        pitch: 4,
-        acc_in: '',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'No accidental should be added'
-    }, {
-        pitch: 10,
-        acc_in: '',
-        acc_expected: 'sharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be added'
-    }, {
-        pitch: 7,
-        acc_in: '',
-        acc_expected: 'sharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be added'
-    }, {
-        pitch: 11,
-        acc_in: '',
-        acc_expected: 'sharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be added'
-    }, {
-        pitch: 8,
-        acc_in: '',
-        acc_expected: 'sharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be added'
-    }, {
-        pitch: 5,
-        acc_in: '',
-        acc_expected: 'sharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be added'
-    }, {
-        pitch: 9,
-        acc_in: '',
-        acc_expected: 'sharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be added'
-    }, {
-        pitch: 6,
-        acc_in: '',
-        acc_expected: 'sharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be added'
-    }];
+    var test_set = [ 'g', 'F', 'C', 'G', 'D', 'a', 'E', 'b' ];
 
-    test_set.forEach(function(set) {
+    test_set.forEach(function(note_str) {
 
-        var note = create_note(set.pitch, set.acc_in);
+        var note = create_note(note_str, '');
         RJ_transpose.add_acc_from_key_signature(note, key_signature);
 
-        deepEqual(note.pitches[0].pitch, set.pitch, set.text_pitch);
-        deepEqual(note.pitches[0].accidental, set.acc_expected, set.text_acc);
+        QUnit.assert.equal_notes(note, note_str, 'sharp', 'Sharp accidental should be added');
     });
 
 });
@@ -933,130 +360,32 @@ test('dblsharps', function() {
 
     var key_signature = create_key_signature('C#M');
 
-    var test_set = [{
-        pitch: 4,
-        acc_in: 'sharp',
-        acc_expected: 'sharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be unchanged'
-    }, {
-        pitch: 10,
-        acc_in: 'sharp',
-        acc_expected: 'dblsharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be added'
-    }, {
-        pitch: 7,
-        acc_in: 'sharp',
-        acc_expected: 'dblsharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be added'
-    }, {
-        pitch: 11,
-        acc_in: 'sharp',
-        acc_expected: 'dblsharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be added'
-    }, {
-        pitch: 8,
-        acc_in: 'sharp',
-        acc_expected: 'dblsharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be added'
-    }, {
-        pitch: 5,
-        acc_in: 'sharp',
-        acc_expected: 'dblsharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be added'
-    }, {
-        pitch: 9,
-        acc_in: 'sharp',
-        acc_expected: 'dblsharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be added'
-    }, {
-        pitch: 6,
-        acc_in: 'sharp',
-        acc_expected: 'dblsharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be added'
-    }];
+    var test_set = [ 'g', 'F', 'C', 'G', 'D', 'a', 'E', 'b' ];
 
-    test_set.forEach(function(set) {
+    test_set.forEach(function(note_str) {
 
-        var note = create_note(set.pitch, set.acc_in);
+        var note = create_note(note_str, 'sharp');
         RJ_transpose.add_acc_from_key_signature(note, key_signature);
 
-        deepEqual(note.pitches[0].pitch, set.pitch, set.text_pitch);
-        deepEqual(note.pitches[0].accidental, set.acc_expected, set.text_acc);
+        QUnit.assert.equal_notes(note, note_str, 'dblsharp', 'Sharp accidental should be added');
     });
 
 });
 
 
-module('RJ_transpose.remove_acc_from_key_signature');
+QUnit.module('RJ_transpose.remove_acc_from_key_signature');
 test('flats', function() {
 
     var key_signature = create_key_signature('CbM');
 
-    var test_set = [{
-        pitch: 3,
-        acc_in: 'flat',
-        acc_expected: 'flat',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Accidental should be unchanged'
-    }, {
-        pitch: 6,
-        acc_in: 'flat',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be removed'
-    }, {
-        pitch: 9,
-        acc_in: 'flat',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be removed'
-    }, {
-        pitch: 5,
-        acc_in: 'flat',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be removed'
-    }, {
-        pitch: 8,
-        acc_in: 'flat',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be removed'
-    }, {
-        pitch: 4,
-        acc_in: 'flat',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be removed'
-    }, {
-        pitch: 7,
-        acc_in: 'flat',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be removed'
-    }, {
-        pitch: 10,
-        acc_in: 'flat',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Flat accidental should be removed'
-    }];
+    var test_set = [ 'f', 'b', 'E', 'a', 'D', 'f', 'C', 'F'];
 
-    test_set.forEach(function(set) {
+    test_set.forEach(function(note_str) {
 
-        var note = create_note(set.pitch, set.acc_in);
+        var note = create_note(note_str, 'flat');
         RJ_transpose.remove_acc_from_key_signature(note, key_signature);
 
-        deepEqual(note.pitches[0].pitch, set.pitch, set.text_pitch);
-        deepEqual(note.pitches[0].accidental, set.acc_expected, set.text_acc);
+        QUnit.assert.equal_notes(note, note_str, '', 'Flat accidental should be removed');
     });
 });
 
@@ -1064,62 +393,13 @@ test('sharps', function() {
 
     var key_signature = create_key_signature('C#M');
 
-    var test_set = [{
-        pitch: 4,
-        acc_in: 'sharp',
-        acc_expected: 'sharp',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Accidental should be unchanged'
-    }, {
-        pitch: 10,
-        acc_in: 'sharp',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be removed'
-    }, {
-        pitch: 7,
-        acc_in: 'sharp',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be removed'
-    }, {
-        pitch: 11,
-        acc_in: 'sharp',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be removed'
-    }, {
-        pitch: 8,
-        acc_in: 'sharp',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be removed'
-    }, {
-        pitch: 5,
-        acc_in: 'sharp',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be removed'
-    }, {
-        pitch: 9,
-        acc_in: 'sharp',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be removed'
-    }, {
-        pitch: 6,
-        acc_in: 'sharp',
-        acc_expected: '',
-        text_pitch: 'Pitch should be unchanged',
-        text_acc: 'Sharp accidental should be removed'
-    }];
+    var test_set = [ 'g', 'F', 'C', 'G', 'D', 'a', 'E', 'b' ];
 
-    test_set.forEach(function(set) {
+    test_set.forEach(function(note_str) {
 
-        var note = create_note(set.pitch, set.acc_in);
+        var note = create_note(note_str, 'sharp');
         RJ_transpose.remove_acc_from_key_signature(note, key_signature);
 
-        deepEqual(note.pitches[0].pitch, set.pitch, set.text_pitch);
-        deepEqual(note.pitches[0].accidental, set.acc_expected, set.text_acc);
+        QUnit.assert.equal_notes(note, note_str, '', 'Sharp accidental should be removed');
     });
 });
