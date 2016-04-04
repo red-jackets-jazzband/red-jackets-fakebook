@@ -26,20 +26,6 @@ module.exports = function(grunt) {
                 src: ['source/scripts/red-jackets*.js']
             },
         },
-        natural_docs: {
-            options: {
-                bin: '/usr/bin/NaturalDocs',
-                //projects: '/opt/NaturalDocs/projects',
-                format: 'HTML'
-            },
-            red_jackets: {
-                //project: '/RedJacketsFakebook',
-                project: './',
-                src: '/home/ben/Dropbox/Red\ Jackets/RedJacketsFakebook',
-                output: '/docs',
-                inputs: ['/source/scripts'],
-            }
-        },
         qunit: {
             all: ['test/tests.html']
 
@@ -203,7 +189,6 @@ module.exports = function(grunt) {
     // Load the plugin that provides the "jshint" task.
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-qunit');
-    grunt.loadNpmTasks('grunt-natural-docs');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-uglify');
