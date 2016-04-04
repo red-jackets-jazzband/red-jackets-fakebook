@@ -235,7 +235,7 @@ module.exports = function(grunt) {
     // Default task(s).
     grunt.registerTask('images', ['responsive_images']);
     grunt.registerTask('test', ['unusedimages', 'jshint', 'qunit']);
-    grunt.registerTask('export', ['natural_docs', 'clean:build', 'copy:build']);
+    grunt.registerTask('export', ['clean:build', 'copy:build']);
     grunt.registerTask('scripts', ['strip_code', 'uglify', 'clean:scripts']);
     grunt.registerTask('stylesheets', ['cssmin', 'clean:stylesheets', 'copy:fonts']);
     grunt.registerTask('svgs', ['svgmin', 'clean:svgs']);

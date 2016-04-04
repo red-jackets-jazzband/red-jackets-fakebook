@@ -1,7 +1,7 @@
 How to configure
 ----------------
 
-* Make sure you have: Node.js & NaturalDocs
+* Make sure you have: Node.js
 
 * install all plugins
 
@@ -12,5 +12,5 @@ How to configure
     grunt
 
 * download latest version:
-    
+
     https://build.phonegap.com/apps/860187/builds
