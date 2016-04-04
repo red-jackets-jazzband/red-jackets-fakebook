@@ -1,9 +1,9 @@
 # Generated folders
-/build/*
-/docs/*
+build/*
+docs/*
 
 # Plugins
-/node_modules/*
+node_modules/*
 
 # Generated files
-/red-jackets-fakebook.zip
+red-jackets-fakebook.zip
